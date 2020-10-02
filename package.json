@@ -1,0 +1,43 @@
+{
+  "name": "merge-queue-init",
+  "version": "0.0.0",
+  "description": "handles a merge queue initiation with github actions",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build src/index.js --license licenses.txt",
+    "commit": "git add . && git commit -am 'chore: add dist action'",
+    "push": "git push --follow-tags",
+    "build:push": "run-s build commit push",
+    "release:patch": "run-s build commit && npm version patch && npm run push",
+    "release:minor": "run-s build commit && npm version minor && npm run push",
+    "release:major": "run-s build commit && npm version major && npm run push"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lwhiteley/merge-queue-init.git"
+  },
+  "keywords": [
+    "actions",
+    "github",
+    "action",
+    "merge",
+    "queue"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lwhiteley/merge-queue-init/issues"
+  },
+  "homepage": "https://github.com/lwhiteley/merge-queue-init#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "lodash": "^4.17.20",
+    "slack": "^11.0.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.24.1",
+    "npm-run-all": "^4.1.5"
+  }
+}
