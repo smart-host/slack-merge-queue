@@ -2,7 +2,7 @@
   "name": "merge-queue-init",
   "version": "0.0.0",
   "description": "handles a merge queue initiation with github actions",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build src/index.js --license licenses.txt",
