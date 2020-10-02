@@ -22,7 +22,8 @@
     "github",
     "action",
     "merge",
-    "queue"
+    "queue",
+    "init"
   ],
   "author": "",
   "license": "Apache-2.0",
