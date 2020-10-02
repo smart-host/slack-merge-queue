@@ -1,0 +1,35 @@
+{
+  "name": "merge-queue-init",
+  "version": "0.0.0",
+  "description": "handles a merge queue initiation with github actions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lwhiteley/merge-queue-init.git"
+  },
+  "keywords": [
+    "actions",
+    "github",
+    "action",
+    "merge",
+    "queue"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lwhiteley/merge-queue-init/issues"
+  },
+  "homepage": "https://github.com/lwhiteley/merge-queue-init#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "lodash": "^4.17.20",
+    "slack": "^11.0.2"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.24.1"
+  }
+}
