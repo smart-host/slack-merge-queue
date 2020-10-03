@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git add . && git commit -am 'chore: add dist action'",
     "push": "git push --follow-tags",
-    "commit:push":"npm run commit && npm run push",
+    "commit:push": "npm run commit && npm run push",
     "release:patch": "npm run commit && npm version patch && npm run push",
     "release:minor": "npm run commit && npm version minor && npm run push",
     "release:major": "npm run commit && npm version major && npm run push"
@@ -34,7 +34,6 @@
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@slack/web-api": "^5.12.0",
-    "lodash": "^4.17.20",
-    "slack": "^11.0.2"
+    "lodash": "^4.17.20"
   }
 }
