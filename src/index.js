@@ -1,4 +1,6 @@
 const core = require('@actions/core');
+const github = require('@actions/github');
+const get = require('lodash/get');
 const { WebClient } = require('@slack/web-api');
 
 const { setActionStatus } = require('./helpers');
@@ -10,6 +12,7 @@ const client = new WebClient(token);
 
 (async function main() {
   const modeName = core.getInput('mode');
+  const payload = get(github, 'context.payload', {});
   const mode = modes[modeName];
 
   if (!mode) {
@@ -17,5 +20,12 @@ const client = new WebClient(token);
     return core.setFailed('mode not recognised');
   }
 
-  await mode({ client });
+  core.info(`mode: ${modeName}\n`);
+
+  try {
+    await mode({ client, payload });
+  } catch (error) {
+    setActionStatus(STATUS.FAILURE);
+    core.setFailed(error.message);
+  }
 })();

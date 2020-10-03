@@ -1,0 +1,27 @@
+name: test_update_queue
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  add_to_queue:
+    env: # Or as an environment variable
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+    runs-on: ubuntu-latest
+    name: Update Queue
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update queue
+        uses: ./ # Uses an action in the root directory
+        id: update_q_on_close
+        with:
+          mode: 'MERGE'
+      # Use the output from the `update_q_on_close` step
+      - name: Get the output status
+        run: echo "status => ${{ steps.update_q_on_close.outputs.status }}"
+      - name: Get the next PR number
+        run: echo "status => ${{ steps.update_q_on_close.outputs.next_pr }}"
