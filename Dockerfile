@@ -2,4 +2,4 @@ FROM node:slim
 
 COPY . .
 
-ENTRYPOINT ["node", "dist/index.js"]
+ENTRYPOINT ["node", "src/index.js"]
