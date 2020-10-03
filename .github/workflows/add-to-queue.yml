@@ -20,6 +20,7 @@ jobs:
         id: add_to_q
         with:
           init_trigger: '/merging'
+          mode: 'INIT'
       # Use the output from the `add_to_q` step
       - name: Get the output
         run: echo "status => ${{ steps.add_to_q.outputs.status }}"
