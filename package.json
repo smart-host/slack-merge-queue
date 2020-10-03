@@ -1,7 +1,7 @@
 {
-  "name": "merge-queue-init",
+  "name": "slack-merge-queue",
   "version": "0.0.0",
-  "description": "handles a merge queue initiation with github actions",
+  "description": "manages a merge queue with github actions and slack",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lwhiteley/merge-queue-init.git"
+    "url": "git+https://github.com/lwhiteley/slack-merge-queue.git"
   },
   "keywords": [
     "actions",
@@ -27,9 +27,9 @@
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lwhiteley/merge-queue-init/issues"
+    "url": "https://github.com/lwhiteley/slack-merge-queue/issues"
   },
-  "homepage": "https://github.com/lwhiteley/merge-queue-init#readme",
+  "homepage": "https://github.com/lwhiteley/slack-merge-queue#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",

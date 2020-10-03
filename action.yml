@@ -1,17 +1,21 @@
 name: 'Merge Queue init'
 description: 'handles a merge queue'
 inputs:
-  trigger:  # id of input
+  init_trigger:
     description: 'the trigger keyword to add PR to queue'
     required: false
     default: '/merging'
-  channel:  # id of input
+  channel:
     description: 'the channel to use as the queue'
     required: false
     default: 'merge-queue'
+  mode:
+    description: 'mode of the action, changes behaviour based on mode'
+    required: false
+    default: 'INIT'
 outputs:
   status: # id of output
-    description: 'status of the build run: TRIGGER_NOT_FOUND, ALREADY_CLOSED, ALREADY_QUEUED, ADDED_TO_QUEUE'
+    description: 'status of the build run: TRIGGER_NOT_FOUND, ALREADY_CLOSED, ALREADY_QUEUED, ADDED_TO_QUEUE, FAILURE'
 runs:
   using: 'node12'
   main: 'src/index.js'
