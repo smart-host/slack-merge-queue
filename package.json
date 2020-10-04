@@ -8,9 +8,9 @@
     "commit": "git add . && git commit -am 'chore: add dist action'",
     "push": "git push --follow-tags",
     "commit:push": "npm run commit && npm run push",
-    "release:patch": "npm run commit && npm version patch && npm run push",
-    "release:minor": "npm run commit && npm version minor && npm run push",
-    "release:major": "npm run commit && npm version major && npm run push"
+    "release:patch": "npm version patch && npm run push",
+    "release:minor": "npm version minor && npm run push",
+    "release:major": "npm version major && npm run push"
   },
   "repository": {
     "type": "git",
