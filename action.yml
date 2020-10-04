@@ -12,13 +12,17 @@ inputs:
   merge_ready_message:
     description: 'message for alerting next PR in the queue'
     required: false
-    default: 'ready to merge!'
+    default: 'Last PR closed. This PR is now up for merge!'
+  alert_message:
+    description: 'message for alerting current PR in the queue'
+    required: false
+    default: 'build is complete. Time to merge!'
   mode:
     description: 'mode of the action, changes behaviour based on mode'
     required: true
 outputs:
   status: 
-    description: 'status of the build run: TRIGGER_NOT_FOUND, ALREADY_CLOSED, ALREADY_QUEUED, ADDED_TO_QUEUE, FAILURE'
+    description: 'status of the build run'
   next_pr: 
     description: 'id number of next pull request in the queue'
 runs:

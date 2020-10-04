@@ -15,12 +15,12 @@ const client = new WebClient(token);
   const payload = get(github, 'context.payload', {});
   const mode = modes[modeName];
 
+  core.info(`mode: ${modeName}\n`);
+
   if (!mode) {
     setActionStatus(STATUS.FAILURE);
     return core.setFailed('mode not recognised');
   }
-
-  core.info(`mode: ${modeName}\n`);
 
   try {
     await mode({ client, payload });
