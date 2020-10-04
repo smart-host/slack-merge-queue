@@ -67,7 +67,7 @@ on:
 
 jobs:
   update_q_on_close:
-    env: # Or as an environment variable
+    env:
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     runs-on: ubuntu-latest
     name: Update Queue
@@ -99,7 +99,7 @@ on:
 
 jobs:
   alert_current_pr:
-    env: # Or as an environment variable
+    env:
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     runs-on: ubuntu-latest
     name: Alert Current in Queue
@@ -177,7 +177,7 @@ The status of the build run to give an insight into what has happened. These can
 
 ### Tips:
 
-- To watch a thread in slack, manually make a comment in the message thread. you will then be alerted when events a posted to the queue item. For eg. just add a "Watching" comment to the thread of the queue item
+- To watch a thread in slack, manually make a comment in the message thread. you will then be alerted when events are posted to the queue item. For eg. just add a "Watching" comment to the thread of the queue item
 
 ## Notes
 
