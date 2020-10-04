@@ -26,5 +26,6 @@ const client = new WebClient(token);
     await mode({ client, payload });
   } catch (error) {
     setActionStatus(STATUS.FAILED);
+    core.error(error.message);
   }
 })();
