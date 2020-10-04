@@ -1,14 +1,17 @@
-name: 'Merge Queue init'
-description: 'handles a merge queue'
+name: 'Slack Merge Queue'
+description: 'handles a merge queue within slack'
 inputs:
-  init_trigger:
-    description: 'the trigger keyword to add PR to queue'
-    required: false
-    default: '/merging'
+  mode:
+    description: 'mode of the action, changes behaviour based on mode'
+    required: true
   channel:
     description: 'the channel to use as the queue'
     required: false
     default: 'merge-queue'
+  init_trigger:
+    description: 'the trigger keyword to add PR to queue'
+    required: false
+    default: '/merging'
   merge_ready_message:
     description: 'message for alerting next PR in the queue'
     required: false
@@ -17,9 +20,6 @@ inputs:
     description: 'message for alerting current PR in the queue'
     required: false
     default: 'build is complete. Time to merge!'
-  mode:
-    description: 'mode of the action, changes behaviour based on mode'
-    required: true
 outputs:
   status: 
     description: 'status of the build run'

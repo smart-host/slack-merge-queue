@@ -5,7 +5,7 @@ on:
     types: [closed]
 
 jobs:
-  add_to_queue:
+  update_q_on_close:
     env: # Or as an environment variable
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     runs-on: ubuntu-latest

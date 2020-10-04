@@ -18,14 +18,13 @@ const client = new WebClient(token);
   core.info(`mode: ${modeName}\n`);
 
   if (!mode) {
-    setActionStatus(STATUS.FAILURE);
+    setActionStatus(STATUS.FAILED);
     return core.setFailed('mode not recognised');
   }
 
   try {
     await mode({ client, payload });
   } catch (error) {
-    setActionStatus(STATUS.FAILURE);
-    core.setFailed(error.message);
+    setActionStatus(STATUS.FAILED);
   }
 })();

@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  add_to_queue:
+  alert_current_pr:
     env: # Or as an environment variable
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
     runs-on: ubuntu-latest
