@@ -185,7 +185,7 @@ The status of the build run to give an insight into what has happened. These can
 
 ## Notes
 
-- pull requests are welcome!
+- pull requests are welcome
 
 ## License
 

@@ -1,0 +1,27 @@
+name: test_alert_current_push
+
+on:
+  push:
+    branches-ignore:
+      - random
+
+jobs:
+  alert_current_pr:
+    env: # Or as an environment variable
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+    runs-on: ubuntu-latest
+    name: Alert Current in Queue from push event
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Alert queue from push
+        uses: ./ # Uses an action in the root directory
+        id: alert
+        with:
+          mode: 'ALERT'
+          alert_message: 'build is complete. Time to merge! from push'
+      # Use the output from the `alert` step
+      - name: Get the output status
+        run: echo "status => ${{ steps.alert.outputs.status }}"
