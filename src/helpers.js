@@ -18,7 +18,7 @@ const parseTag = (str) => {
 };
 
 const getMessage = (payload) => {
-  const url = get(payload, 'comment.issue_url', '');
+  const url = get(payload, 'comment.html_url', '');
   const title = get(payload, 'issue.title');
   const issueNumber = get(payload, 'issue.number');
 
