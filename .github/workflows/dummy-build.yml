@@ -1,0 +1,16 @@
+name: mock-workflow
+
+on:
+  push:
+    branches-ignore:
+      - random
+
+jobs:
+  external-workflow:
+    name: external-workflow-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: sleep
+        run: sleep 20
+      - name: dummy check
+        run: echo "build complete"

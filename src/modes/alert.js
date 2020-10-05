@@ -5,7 +5,11 @@ const { setActionStatus, parseTag, findPrInQueue } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function alert({ client, payload: orgPayload }) {
-  const issueNumber = get(orgPayload, 'pull_request.number');
+  let issueNumber = get(orgPayload, 'pull_request.number');
+
+  if (get(orgPayload, 'workflow_run')) {
+    issueNumber = get(orgPayload, 'workflow_run.pull_requests[0].number');
+  }
   const payload = {
     ...orgPayload,
     issueNumber,

@@ -13,6 +13,7 @@ const client = new WebClient(token);
 (async function main() {
   const modeName = core.getInput('mode');
   const payload = get(github, 'context.payload', {});
+
   const mode = modes[modeName];
 
   core.info(`mode: ${modeName}\n`);
