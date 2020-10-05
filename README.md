@@ -179,6 +179,10 @@ The status of the build run to give an insight into what has happened. These can
 
 - To watch a thread in slack, manually make a comment in the message thread. you will then be alerted when events are posted to the queue item. For eg. just add a "Watching" comment to the thread of the queue item
 
+### Todos
+
+- [ ] conditionally/lazily map github user to slack user for simpler notification
+
 ## Notes
 
 - pull requests are welcome!
