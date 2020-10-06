@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
+const findLast = require('lodash/findLast');
 
 const { DELIM, SEARCH_PREFIX, Q_STATUS } = require('./consts');
 
@@ -114,7 +115,7 @@ const findPrInQueue = async ({ payload, client, filter = () => true }) => {
     client,
     channel: channelName,
   });
-  return matches.find((message) => {
+  return findLast(matches, (message) => {
     const { text } = message;
     const { issueNumber: num } = parseTag(text);
     return num.trim() === issueNumber.toString() && filter(message);
@@ -128,7 +129,7 @@ const findNextWithMergingStatus = async ({ client, payload }) => {
     client,
     channel: channelName,
   });
-  return matches.find((message) => {
+  return findLast(matches, (message) => {
     const { text } = message;
     const { mergeStatus, issueNumber: num } = parseTag(text);
     return (
