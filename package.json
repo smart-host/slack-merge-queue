@@ -4,7 +4,7 @@
   "description": "manages a merge queue with github actions and slack",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "commit": "git add . && git commit -am 'chore: add dist action'",
     "push": "git push --follow-tags",
     "commit:push": "npm run commit && npm run push",

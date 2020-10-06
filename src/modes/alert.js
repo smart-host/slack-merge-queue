@@ -1,16 +1,19 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
+const findLast = require('lodash/findLast');
 
 const {
   setActionStatus,
   parseTag,
-  findPrInQueue,
   getWatchers,
+  getHistory,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function alert({ client, payload: orgPayload }) {
   let issueNumber = get(orgPayload, 'pull_request.number');
+  const onlyWhenCurrent =
+    core.getInput('only_when_current').toLowerCase() === 'true';
 
   if (get(orgPayload, 'workflow_run')) {
     issueNumber = get(orgPayload, 'workflow_run.pull_requests[0].number');
@@ -19,19 +22,34 @@ async function alert({ client, payload: orgPayload }) {
     ...orgPayload,
     issueNumber,
   };
-  const match = await findPrInQueue({
-    payload,
+  const { messages = [] } = await getHistory({
+    channel: core.getInput('channel'),
     client,
-    filter: ({ text }) => {
-      const { mergeStatus } = parseTag(text);
-      return mergeStatus === Q_STATUS.MERGING;
-    },
+  });
+
+  const matches = messages.filter(({ text }) => {
+    const { mergeStatus } = parseTag(text);
+    return mergeStatus === Q_STATUS.MERGING;
+  });
+
+  const highestPriorityIndex = matches.length - 1;
+  core.info(`Queue size: ${matches.length}`);
+  core.info(`Highest priority index: ${highestPriorityIndex} `);
+
+  const match = findLast(matches, (message, i) => {
+    const { text } = message;
+    const { issueNumber: num } = parseTag(text);
+    const isCurrentPR = num.trim() === issueNumber.toString();
+    const shouldAlert =
+      !onlyWhenCurrent || (onlyWhenCurrent && i === highestPriorityIndex);
+    if (isCurrentPR) {
+      core.info(`current index: ${i}`);
+    }
+    return shouldAlert && isCurrentPR;
   });
 
   if (!match) {
-    core.info(
-      `Could not find pull request with status['${Q_STATUS.MERGING}'] in queue`,
-    );
+    core.info(`Could not find pull request in queue or did not satify filters`);
     return setActionStatus(STATUS.NOT_FOUND);
   }
 

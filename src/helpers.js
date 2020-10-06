@@ -112,10 +112,13 @@ const findPrInQueue = async ({ payload, client, filter = () => true }) => {
     client,
     channel: channelName,
   });
-  return findLast(matches, (message) => {
+
+  return findLast(matches, (message, ...args) => {
     const { text } = message;
     const { issueNumber: num } = parseTag(text);
-    return num.trim() === issueNumber.toString() && filter(message);
+    return (
+      num.trim() === issueNumber.toString() && filter(message, ...args, matches)
+    );
   });
 };
 
@@ -136,6 +139,7 @@ const findNextWithMergingStatus = async ({ client, payload }) => {
 };
 
 const WATCHERS_TITLE = 'Watchers';
+const ATTACH_PREFIXES = ['notify:']; //
 
 const getWatchers = (match) => {
   let watchers = '';
@@ -151,8 +155,6 @@ const getWatchers = (match) => {
 
   return watchers;
 };
-
-const ATTACH_PREFIXES = ['notify:']; //
 
 const processors = {
   'notify:': ({ text, members }) => {

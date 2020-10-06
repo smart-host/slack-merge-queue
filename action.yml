@@ -26,6 +26,11 @@ inputs:
   icon_url:
     description: 'icon url for the bot'
     required: false
+  only_when_current:
+    description: 'ALERT MODE: only alert if PR is currently up for merge'
+    required: false
+    default: 'true'
+
 outputs:
   status: 
     description: 'status of the build run'
