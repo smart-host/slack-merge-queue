@@ -184,6 +184,7 @@ The status of the build run to give an insight into what has happened. These can
 - [ ] conditionally/lazily map github user to slack user for simpler notification
 - [ ] option to not alert build that is not top of the queue
 - [ ] mark builds as STALE if a later item in the queue is merged before them
+- [ ] update readme
 
 ## Notes
 
