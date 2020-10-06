@@ -29,44 +29,61 @@ const setActionStatus = (status) => {
   core.setOutput('status', status);
 };
 
+const getHistory = async ({ client, channel, ...opts }) => {
+  let msgs = [];
+  let hasMore = true;
+  let cursor = undefined;
+
+  while (hasMore) {
+    const {
+      messages,
+      response_metadata,
+      has_more,
+    } = await client.conversations.history({
+      channel,
+      cursor,
+      ...opts,
+    });
+
+    hasMore = has_more;
+    cursor = response_metadata.next_cursor;
+
+    msgs = [
+      ...msgs,
+      ...messages.filter(({ text }) => text.includes(SEARCH_PREFIX)),
+    ];
+  }
+
+  return { messages: msgs };
+};
+
 const findPrInQueue = async ({ payload, client, filter = () => true }) => {
   const channelName = core.getInput('channel');
   const { issueNumber } = payload;
-  const {
-    messages: { matches },
-  } = await client.search.messages({
-    query: SEARCH_PREFIX,
-    sort: 'timestamp',
-    sort_dir: 'asc',
+
+  const { messages: matches } = await getHistory({
+    client,
+    channel: channelName,
   });
   return matches.find((message) => {
-    const { text, channel } = message;
+    const { text } = message;
     const { issueNumber: num } = parseTag(text);
-    return (
-      num.trim() === issueNumber.toString() &&
-      channel.name === channelName &&
-      filter(message)
-    );
+    return num.trim() === issueNumber.toString() && filter(message);
   });
 };
 
 const findNextWithMergingStatus = async ({ client, payload }) => {
   const channelName = core.getInput('channel');
   const { issueNumber } = payload;
-  const {
-    messages: { matches },
-  } = await client.search.messages({
-    query: SEARCH_PREFIX,
-    sort: 'timestamp',
-    sort_dir: 'asc',
+  const { messages: matches } = await getHistory({
+    client,
+    channel: channelName,
   });
   return matches.find((message) => {
-    const { text, channel } = message;
+    const { text } = message;
     const { mergeStatus, issueNumber: num } = parseTag(text);
     return (
-      num.trim() !== issueNumber.toString() &&
-      Q_STATUS.MERGING === mergeStatus &&
-      channel.name === channelName
+      num.trim() !== issueNumber.toString() && Q_STATUS.MERGING === mergeStatus
     );
   });
 };
@@ -135,4 +152,5 @@ module.exports = {
   findNextWithMergingStatus,
   getWatchers,
   buildAttachment,
+  getHistory,
 };
