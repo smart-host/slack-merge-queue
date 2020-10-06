@@ -42,6 +42,7 @@ const findPrInQueue = async ({ payload, client, filter = () => true }) => {
   return matches.find((message) => {
     const { text, channel } = message;
     const { issueNumber: num } = parseTag(text);
+    console.log(text);
     return (
       num.trim() === issueNumber.toString() &&
       channel.name === channelName &&
