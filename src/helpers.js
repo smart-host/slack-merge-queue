@@ -29,6 +29,55 @@ const setActionStatus = (status) => {
   core.setOutput('status', status);
 };
 
+const getUser = async ({ client, id }) => {
+  const { user } = await client.users.info({ user: id });
+  return user;
+};
+
+const getMembers = async ({ client, channel, ...opts }) => {
+  let results = [];
+  let hasMore = true;
+  let cursor = undefined;
+
+  while (hasMore) {
+    const {
+      members,
+      response_metadata,
+      has_more,
+    } = await client.conversations.members({
+      channel,
+      cursor,
+      ...opts,
+    });
+
+    hasMore = has_more;
+    cursor = response_metadata.next_cursor;
+
+    const membersInfo = await Promise.all(
+      members.map(async (id) => {
+        const user = await getUser({ id, client });
+        return user;
+      }),
+    );
+
+    results = [...results, ...membersInfo];
+  }
+
+  return { members: results };
+};
+
+const getUserFromName = ({ name: providedName, members }) => {
+  const member = members.find(({ name, real_name, id }) => {
+    return (
+      (providedName || '').trim() === name ||
+      real_name === providedName ||
+      id === providedName
+    );
+  });
+
+  return member;
+};
+
 const getHistory = async ({ client, channel, ...opts }) => {
   let msgs = [];
   let hasMore = true;
@@ -108,9 +157,23 @@ const getWatchers = (match) => {
 const ATTACH_PREFIXES = ['notify:']; //
 
 const processors = {
-  'notify:': (text) => {
+  'notify:': ({ text, members }) => {
     const usersArr = text.replace('notify:', '').trim().split(',');
-    const users = usersArr.map((user) => `<@${user.trim()}>`).join(', ');
+    const users = usersArr
+      .map((user) => {
+        const { id } = getUserFromName({ name: user.trim(), members }) || {};
+        if (!id) {
+          return null;
+        }
+
+        return `<@${id}>`;
+      })
+      .filter(Boolean)
+      .join(', ');
+
+    if (!users) {
+      return undefined;
+    }
     return {
       title: WATCHERS_TITLE,
       mrkdwn_in: ['text'],
@@ -120,10 +183,12 @@ const processors = {
   },
 };
 
-const buildAttachment = (comments) => {
+const buildAttachment = async ({ comments, client, channel, ...opts }) => {
   if (!Array.isArray(comments)) {
     return undefined;
   }
+
+  const { members } = await getMembers({ ...opts, client, channel });
 
   const attachments = ATTACH_PREFIXES.reduce((accu, next) => {
     const prefixText = comments.find((x) => x.includes(next));
@@ -133,7 +198,7 @@ const buildAttachment = (comments) => {
       return accu;
     }
 
-    return [...accu, process(prefixText)];
+    return [...accu, process({ text: prefixText, members })];
   }, []);
 
   if (attachments.length === 0) {
@@ -153,4 +218,6 @@ module.exports = {
   getWatchers,
   buildAttachment,
   getHistory,
+  getMembers,
+  getUserFromName,
 };

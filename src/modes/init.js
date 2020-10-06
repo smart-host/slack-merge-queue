@@ -45,7 +45,11 @@ async function initRole({ client, payload: orgPayload }) {
     channel,
     text,
     mrkdwn: true,
-    attachments: buildAttachment(commentArr),
+    attachments: await buildAttachment({
+      comments: commentArr,
+      client,
+      channel,
+    }),
     icon_emoji: core.getInput('icon_emoji'),
     icon_url: core.getInput('icon_url'),
   });
