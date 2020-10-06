@@ -91,7 +91,7 @@ const ATTACH_PREFIXES = ['notify:']; //
 const processors = {
   'notify:': (text) => {
     const usersArr = text.replace('notify:', '').trim().split(',');
-    const users = usersArr.map((user) => `<@${user}>`).join(', ');
+    const users = usersArr.map((user) => `<@${user.trim()}>`).join(', ');
     return `Watchers: ${users}`;
   },
 };
