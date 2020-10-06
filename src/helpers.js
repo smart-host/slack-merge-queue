@@ -71,15 +71,17 @@ const findNextWithMergingStatus = async ({ client, payload }) => {
   });
 };
 
+const WATCHERS_TITLE = 'Watchers';
+
 const getWatchers = (match) => {
   let watchers = '';
 
   if (Array.isArray(match.attachments)) {
-    const watchersPrefix = 'Watchers:';
-    const { text } =
-      match.attachments.find(({ text }) => text.includes(watchersPrefix)) || {};
-    if (text) {
-      watchers = `\n${text.replace(watchersPrefix, '').trim()}`;
+    const { fields } =
+      match.attachments.find(({ title }) => title.includes(WATCHERS_TITLE)) ||
+      {};
+    if (fields) {
+      watchers = `\n${fields[0].value}`;
     }
   }
 
@@ -92,7 +94,12 @@ const processors = {
   'notify:': (text) => {
     const usersArr = text.replace('notify:', '').trim().split(',');
     const users = usersArr.map((user) => `<@${user.trim()}>`).join(', ');
-    return `Watchers: ${users}`;
+    return {
+      title: WATCHERS_TITLE,
+      mrkdwn_in: ['text'],
+      color: '#36a64f',
+      fields: [{ value: users }],
+    };
   },
 };
 
@@ -109,12 +116,7 @@ const buildAttachment = (comments) => {
       return accu;
     }
 
-    return [
-      ...accu,
-      {
-        text: process(prefixText),
-      },
-    ];
+    return [...accu, process(prefixText)];
   }, []);
 
   if (attachments.length === 0) {
