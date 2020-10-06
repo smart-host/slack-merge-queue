@@ -15,6 +15,12 @@ async function alert({ client, payload: orgPayload }) {
   if (get(orgPayload, 'workflow_run')) {
     issueNumber = get(orgPayload, 'workflow_run.pull_requests[0].number');
   }
+  core.info(`${JSON.stringify(orgPayload, null, 2)}`);
+
+  if (get(orgPayload, 'check_suite')) {
+    core.info(`${JSON.stringify(orgPayload, null, 2)}`);
+  }
+
   const payload = {
     ...orgPayload,
     issueNumber,
