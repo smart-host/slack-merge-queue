@@ -1,7 +1,12 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
 
-const { setActionStatus, parseTag, findPrInQueue } = require('../helpers');
+const {
+  setActionStatus,
+  parseTag,
+  findPrInQueue,
+  getWatchers,
+} = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function alert({ client, payload: orgPayload }) {
@@ -31,11 +36,16 @@ async function alert({ client, payload: orgPayload }) {
   }
 
   core.info(`found PR in queue, sending alert in thread`);
+  core.debug(`${JSON.stringify(match, null, 2)}`);
+  let watchers = getWatchers(match);
+
+  const alertMsg = core.getInput('alert_message');
+  const alertText = `${alertMsg}${watchers}`;
 
   await client.chat.postMessage({
     thread_ts: match.ts,
     mrkdwn: true,
-    text: core.getInput('alert_message'),
+    text: alertText,
     channel: match.channel.id,
   });
 

@@ -1,7 +1,12 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
 
-const { getMessage, findPrInQueue, setActionStatus } = require('../helpers');
+const {
+  getMessage,
+  findPrInQueue,
+  setActionStatus,
+  buildAttachment,
+} = require('../helpers');
 const { STATUS } = require('../consts');
 
 async function initRole({ client, payload: orgPayload }) {
@@ -40,6 +45,7 @@ async function initRole({ client, payload: orgPayload }) {
     channel,
     text,
     mrkdwn: true,
+    attachments: buildAttachment(commentArr),
   });
   core.info(JSON.stringify(result, null, 2));
 

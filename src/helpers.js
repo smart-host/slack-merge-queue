@@ -18,7 +18,7 @@ const parseTag = (str) => {
 };
 
 const getMessage = (payload) => {
-  const url = get(payload, 'comment.html_url', '');
+  const url = get(payload, 'comment.html_url', '').split('#')[0];
   const title = get(payload, 'issue.title');
   const issueNumber = get(payload, 'issue.number');
 
@@ -71,6 +71,59 @@ const findNextWithMergingStatus = async ({ client, payload }) => {
   });
 };
 
+const getWatchers = (match) => {
+  let watchers = '';
+
+  if (Array.isArray(match.attachments)) {
+    const watchersPrefix = 'Watchers:';
+    const { text } =
+      match.attachments.find(({ text }) => text.includes(watchersPrefix)) || {};
+    if (text) {
+      watchers = `\n${text.replace(watchersPrefix, '').trim()}`;
+    }
+  }
+
+  return watchers;
+};
+
+const ATTACH_PREFIXES = ['notify:']; //
+
+const processors = {
+  'notify:': (text) => {
+    const usersArr = text.replace('notify:', '').trim().split(',');
+    const users = usersArr.map((user) => `<@${user}>`).join(', ');
+    return `Watchers: ${users}`;
+  },
+};
+
+const buildAttachment = (comments) => {
+  if (!Array.isArray(comments)) {
+    return undefined;
+  }
+
+  const attachments = ATTACH_PREFIXES.reduce((accu, next) => {
+    const prefixText = comments.find((x) => x.includes(next));
+    const process = processors[next] || ((text) => text);
+
+    if (!prefixText) {
+      return accu;
+    }
+
+    return [
+      ...accu,
+      {
+        text: process(prefixText),
+      },
+    ];
+  }, []);
+
+  if (attachments.length === 0) {
+    return undefined;
+  }
+
+  return attachments;
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -78,4 +131,6 @@ module.exports = {
   buildTag,
   parseTag,
   findNextWithMergingStatus,
+  getWatchers,
+  buildAttachment,
 };

@@ -7,6 +7,7 @@ const {
   parseTag,
   findPrInQueue,
   findNextWithMergingStatus,
+  getWatchers,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -76,11 +77,15 @@ async function merge({ client, payload: orgPayload }) {
 
   const { issueNumber: nextPrNum } = parseTag(nextPr.text);
   core.setOutput('next_pr', nextPrNum);
+  const watchers = getWatchers(nextPr);
+
+  const alertMsg = core.getInput('merge_ready_message');
+  const alertText = `${alertMsg}${watchers}`;
 
   await client.chat.postMessage({
     thread_ts: nextPr.ts,
     mrkdwn: true,
-    text: core.getInput('merge_ready_message'),
+    text: alertText,
     channel: nextPr.channel.id,
   });
 }
