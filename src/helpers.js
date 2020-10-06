@@ -69,11 +69,8 @@ const getMembers = async ({ client, channel, ...opts }) => {
 
 const getUserFromName = ({ name: providedName, members }) => {
   const member = members.find(({ name, real_name, id }) => {
-    return (
-      (providedName || '').trim() === name ||
-      real_name === providedName ||
-      id === providedName
-    );
+    const pn = (providedName || '').trim();
+    return pn === name || real_name === pn || id === pn;
   });
 
   return member;
