@@ -46,7 +46,7 @@ async function alert({ client, payload: orgPayload }) {
     thread_ts: match.ts,
     mrkdwn: true,
     text: alertText,
-    channel: match.channel.id,
+    channel: core.getInput('channel'),
   });
 
   return setActionStatus(STATUS.COMPLETED);

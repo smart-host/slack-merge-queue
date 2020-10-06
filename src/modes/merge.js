@@ -63,7 +63,7 @@ async function merge({ client, payload: orgPayload }) {
   await client.chat.update({
     ts: match.ts,
     text: tag,
-    channel: match.channel.id,
+    channel: core.getInput('channel'),
   });
 
   // alert next in queue
@@ -86,7 +86,7 @@ async function merge({ client, payload: orgPayload }) {
     thread_ts: nextPr.ts,
     mrkdwn: true,
     text: alertText,
-    channel: nextPr.channel.id,
+    channel: core.getInput('channel'),
   });
 }
 

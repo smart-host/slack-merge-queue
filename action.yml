@@ -6,8 +6,7 @@ inputs:
     required: true
   channel:
     description: 'the channel to use as the queue'
-    required: false
-    default: 'merge-queue'
+    required: true
   init_trigger:
     description: 'the trigger keyword to add PR to queue'
     required: false

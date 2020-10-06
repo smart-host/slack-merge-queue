@@ -21,6 +21,7 @@ jobs:
         with:
           mode: 'ALERT'
           alert_message: 'build is complete. Time to merge!'
+          channel: 'G01C4NFBUM7'
       # Use the output from the `alert` step
       - name: Get the output status
         run: echo "status => ${{ steps.alert.outputs.status }}"
