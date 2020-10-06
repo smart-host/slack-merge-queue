@@ -47,6 +47,8 @@ async function alert({ client, payload: orgPayload }) {
     mrkdwn: true,
     text: alertText,
     channel: core.getInput('channel'),
+    icon_emoji: core.getInput('icon_emoji'),
+    icon_url: core.getInput('icon_url'),
   });
 
   return setActionStatus(STATUS.COMPLETED);

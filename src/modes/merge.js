@@ -64,6 +64,8 @@ async function merge({ client, payload: orgPayload }) {
     ts: match.ts,
     text: tag,
     channel: core.getInput('channel'),
+    icon_emoji: core.getInput('icon_emoji'),
+    icon_url: core.getInput('icon_url'),
   });
 
   // alert next in queue
@@ -87,6 +89,8 @@ async function merge({ client, payload: orgPayload }) {
     mrkdwn: true,
     text: alertText,
     channel: core.getInput('channel'),
+    icon_emoji: core.getInput('icon_emoji'),
+    icon_url: core.getInput('icon_url'),
   });
 }
 

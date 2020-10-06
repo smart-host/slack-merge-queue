@@ -46,6 +46,8 @@ async function initRole({ client, payload: orgPayload }) {
     text,
     mrkdwn: true,
     attachments: buildAttachment(commentArr),
+    icon_emoji: core.getInput('icon_emoji'),
+    icon_url: core.getInput('icon_url'),
   });
   core.info(JSON.stringify(result, null, 2));
 
