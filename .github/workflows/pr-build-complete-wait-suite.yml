@@ -1,7 +1,7 @@
 name: test_alert_current_wait_suite
 
 on:
-  check_suite:
+  check_run:
     types: 
       - completed
 
