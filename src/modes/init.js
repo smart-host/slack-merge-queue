@@ -6,8 +6,9 @@ const {
   findPrInQueue,
   setActionStatus,
   buildAttachment,
+  parseTag,
 } = require('../helpers');
-const { STATUS } = require('../consts');
+const { STATUS, Q_STATUS } = require('../consts');
 
 async function initRole({ client, payload: orgPayload }) {
   const payload = {
@@ -32,7 +33,17 @@ async function initRole({ client, payload: orgPayload }) {
     return setActionStatus(STATUS.TRIGGER_NOT_FOUND);
   }
 
-  const match = await findPrInQueue({ payload, client });
+  const match = await findPrInQueue({
+    payload,
+    client,
+    filter: ({ text }) => {
+      if (!text) {
+        return false;
+      }
+      const { mergeStatus } = parseTag(text);
+      return mergeStatus === Q_STATUS.MERGING;
+    },
+  });
 
   if (match) {
     core.info(`PR already in queue:\n ${JSON.stringify(match, null, 2)}`);
