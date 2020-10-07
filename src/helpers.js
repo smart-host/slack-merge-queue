@@ -2,7 +2,14 @@ const core = require('@actions/core');
 const get = require('lodash/get');
 const findLast = require('lodash/findLast');
 
-const { DELIM, SEARCH_PREFIX, Q_STATUS } = require('./consts');
+const {
+  DELIM,
+  SEARCH_PREFIX,
+  Q_STATUS,
+  WATCHERS_TITLE,
+  ATTACH_PREFIXES,
+  ATTACH_PREFIX,
+} = require('./consts');
 
 const buildTag = ({ issueNumber, status, title, url }) => {
   return [SEARCH_PREFIX, issueNumber, status, `<${url}|${title}>`].join(DELIM);
@@ -142,9 +149,6 @@ const findNextWithMergingStatus = async ({ client, payload }) => {
   });
 };
 
-const WATCHERS_TITLE = 'Watchers';
-const ATTACH_PREFIXES = ['notify:']; //
-
 const getWatchers = (match) => {
   let watchers = '';
 
@@ -161,8 +165,8 @@ const getWatchers = (match) => {
 };
 
 const processors = {
-  'notify:': ({ text, members }) => {
-    const usersArr = text.replace('notify:', '').trim().split(',');
+  [ATTACH_PREFIX.NOTIFY]: ({ text, members }) => {
+    const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
     const users = usersArr
       .map((user) => {
         const { id } = getUserFromName({ name: user.trim(), members }) || {};

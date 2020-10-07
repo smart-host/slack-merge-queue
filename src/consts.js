@@ -16,9 +16,19 @@ const Q_STATUS = {
   STALE: 'STALE',
 };
 
+const ATTACH_PREFIX = {
+  NOTIFY: 'notify:',
+};
+
+const WATCHERS_TITLE = 'Watchers';
+const ATTACH_PREFIXES = [ATTACH_PREFIX.NOTIFY];
+
 module.exports = {
   DELIM,
   SEARCH_PREFIX,
   STATUS,
   Q_STATUS,
+  WATCHERS_TITLE,
+  ATTACH_PREFIXES,
+  ATTACH_PREFIX,
 };

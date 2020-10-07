@@ -84,23 +84,19 @@ async function merge({ client, payload: orgPayload }) {
     icon_url: core.getInput('icon_url'),
   });
 
+  const mergingFilter = ({ text }) => {
+    if (!text) {
+      return false;
+    }
+    const { mergeStatus } = parseTag(text);
+    return mergeStatus === Q_STATUS.MERGING;
+  };
+
   const newer = takeWhile(messages, (_, i) => i < matchIndex).filter(
-    ({ text }) => {
-      if (!text) {
-        return false;
-      }
-      const { mergeStatus } = parseTag(text);
-      return mergeStatus === Q_STATUS.MERGING;
-    },
+    mergingFilter,
   );
   const older = takeRightWhile(messages, (_, i) => i > matchIndex).filter(
-    ({ text }) => {
-      if (!text) {
-        return false;
-      }
-      const { mergeStatus } = parseTag(text);
-      return mergeStatus === Q_STATUS.MERGING;
-    },
+    mergingFilter,
   );
 
   // alert next in queue

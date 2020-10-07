@@ -33,6 +33,6 @@ const client = new WebClient(token);
   } catch (error) {
     setActionStatus(STATUS.FAILED);
     core.error(error.message);
-    core.error(error);
+    core.debug(error);
   }
 })();
