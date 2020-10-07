@@ -6,8 +6,7 @@ inputs:
     required: true
   channel:
     description: 'the channel to use as the queue'
-    required: false
-    default: 'merge-queue'
+    required: true
   init_trigger:
     description: 'the trigger keyword to add PR to queue'
     required: false
@@ -20,6 +19,18 @@ inputs:
     description: 'message for alerting current PR in the queue'
     required: false
     default: 'build is complete. Time to merge!'
+  icon_emoji:
+    description: 'icon emoji for the bot'
+    required: false
+    default: ':robot_face:'
+  icon_url:
+    description: 'icon url for the bot'
+    required: false
+  only_when_current:
+    description: 'ALERT MODE: only alert if PR is currently up for merge'
+    required: false
+    default: 'true'
+
 outputs:
   status: 
     description: 'status of the build run'
