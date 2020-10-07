@@ -8,6 +8,10 @@ const buildTag = ({ issueNumber, status, title, url }) => {
   return [SEARCH_PREFIX, issueNumber, status, `<${url}|${title}>`].join(DELIM);
 };
 
+const buildTagFromParse = ({ searchPrefix, issueNumber, mergeStatus, url }) => {
+  return [searchPrefix, issueNumber, mergeStatus, url].join(DELIM);
+};
+
 const parseTag = (str) => {
   const [searchPrefix, issueNumber, status, url] = str.split(DELIM.trim());
   return {
@@ -213,6 +217,7 @@ module.exports = {
   setActionStatus,
   getMessage,
   buildTag,
+  buildTagFromParse,
   parseTag,
   findNextWithMergingStatus,
   getWatchers,
