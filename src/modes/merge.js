@@ -1,12 +1,16 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
+const findLastIndex = require('lodash/findLastIndex');
+const takeWhile = require('lodash/takeWhile');
+const takeRightWhile = require('lodash/takeRightWhile');
+const takeRight = require('lodash/takeRight');
 
 const {
   setActionStatus,
   buildTag,
+  buildTagFromParse,
   parseTag,
-  findPrInQueue,
-  findNextWithMergingStatus,
+  getHistory,
   getWatchers,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
@@ -18,14 +22,26 @@ async function merge({ client, payload: orgPayload }) {
     issueNumber,
   };
   const isMerged = get(payload, 'pull_request.merged');
-  const match = await findPrInQueue({
-    payload,
+
+  const { messages = [] } = await getHistory({
+    channel: core.getInput('channel'),
     client,
-    filter: ({ text }) => {
-      const { mergeStatus } = parseTag(text);
-      return mergeStatus === Q_STATUS.MERGING;
-    },
   });
+
+  // const matches = messages.filter(({ text }) => {
+  //   const { mergeStatus } = parseTag(text);
+  //   return mergeStatus === Q_STATUS.MERGING;
+  // });
+
+  const matchIndex = findLastIndex(messages, (message) => {
+    const { text } = message;
+    const { issueNumber: num, mergeStatus } = parseTag(text);
+    const isCurrentPR = num.trim() === (issueNumber || '').toString();
+    return isCurrentPR && mergeStatus === Q_STATUS.MERGING;
+  });
+
+  const match = messages[matchIndex];
+
   const commonTagProps = {
     issueNumber,
     title: get(payload, 'pull_request.title'),
@@ -68,30 +84,68 @@ async function merge({ client, payload: orgPayload }) {
     icon_url: core.getInput('icon_url'),
   });
 
-  // alert next in queue
-  const nextPr = await findNextWithMergingStatus({ client, payload });
+  const newer = takeWhile(messages, (_, i) => i < matchIndex).filter(
+    ({ text }) => {
+      if (!text) {
+        return false;
+      }
+      const { mergeStatus } = parseTag(text);
+      return mergeStatus === Q_STATUS.MERGING;
+    },
+  );
+  const older = takeRightWhile(messages, (_, i) => i > matchIndex).filter(
+    ({ text }) => {
+      if (!text) {
+        return false;
+      }
+      const { mergeStatus } = parseTag(text);
+      return mergeStatus === Q_STATUS.MERGING;
+    },
+  );
 
-  if (!nextPr) {
-    return null;
+  // alert next in queue
+  const nextPr = takeRight(newer)[0];
+
+  if (nextPr) {
+    core.info(`next PR: \n${JSON.stringify(nextPr, null, 2)}`);
+
+    const { issueNumber: nextPrNum } = parseTag(nextPr.text);
+    core.setOutput('next_pr', nextPrNum);
+    const watchers = getWatchers(nextPr);
+
+    const alertMsg = core.getInput('merge_ready_message');
+    const alertText = `${alertMsg}${watchers}`;
+
+    await client.chat.postMessage({
+      thread_ts: nextPr.ts,
+      mrkdwn: true,
+      text: alertText,
+      channel: core.getInput('channel'),
+      icon_emoji: core.getInput('icon_emoji'),
+      icon_url: core.getInput('icon_url'),
+    });
   }
 
-  core.info(`next PR: \n${JSON.stringify(nextPr, null, 2)}`);
+  if (isMerged) {
+    const promises = older.map(async (msg) => {
+      const { text } = msg;
+      const tagSections = parseTag(text);
+      const newTag = buildTagFromParse({
+        ...tagSections,
+        mergeStatus: Q_STATUS.STALE,
+      });
 
-  const { issueNumber: nextPrNum } = parseTag(nextPr.text);
-  core.setOutput('next_pr', nextPrNum);
-  const watchers = getWatchers(nextPr);
+      await client.chat.update({
+        ts: msg.ts,
+        text: newTag,
+        channel: core.getInput('channel'),
+        icon_emoji: core.getInput('icon_emoji'),
+        icon_url: core.getInput('icon_url'),
+      });
+    });
 
-  const alertMsg = core.getInput('merge_ready_message');
-  const alertText = `${alertMsg}${watchers}`;
-
-  await client.chat.postMessage({
-    thread_ts: nextPr.ts,
-    mrkdwn: true,
-    text: alertText,
-    channel: core.getInput('channel'),
-    icon_emoji: core.getInput('icon_emoji'),
-    icon_url: core.getInput('icon_url'),
-  });
+    await Promise.all(promises);
+  }
 }
 
 module.exports = merge;

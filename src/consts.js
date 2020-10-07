@@ -13,6 +13,7 @@ const Q_STATUS = {
   MERGING: 'MERGING',
   MERGED: 'MERGED',
   CANCELLED: 'CANCELLED',
+  STALE: 'STALE',
 };
 
 module.exports = {
