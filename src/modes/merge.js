@@ -28,11 +28,6 @@ async function merge({ client, payload: orgPayload }) {
     client,
   });
 
-  // const matches = messages.filter(({ text }) => {
-  //   const { mergeStatus } = parseTag(text);
-  //   return mergeStatus === Q_STATUS.MERGING;
-  // });
-
   const matchIndex = findLastIndex(messages, (message) => {
     const { text } = message;
     const { issueNumber: num, mergeStatus } = parseTag(text);

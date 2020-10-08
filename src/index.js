@@ -1,6 +1,5 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const get = require('lodash/get');
 const { WebClient } = require('@slack/web-api');
 
 const { setActionStatus } = require('./helpers');
@@ -13,7 +12,7 @@ const client = new WebClient(token);
 (async function main() {
   const modeName = core.getInput('mode');
   const channel = core.getInput('channel');
-  const payload = get(github, 'context.payload', {});
+  const { payload, ...actionContext } = github.context;
 
   const mode = modes[modeName];
 
@@ -29,7 +28,7 @@ const client = new WebClient(token);
   }
 
   try {
-    await mode({ client, payload, channel });
+    await mode({ client, payload, channel, actionContext });
   } catch (error) {
     setActionStatus(STATUS.FAILED);
     core.error(error.message);
