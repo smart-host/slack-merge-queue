@@ -83,12 +83,17 @@ const getUserFromName = ({ name: providedName, members }) => {
     const pn = (providedName || '').trim();
     const displatName = get(profile, 'display_name');
     const displatNameNormailied = get(profile, 'display_name_normalized');
+    const profileRealName = get(profile, 'real_name');
+    const profileRealNameNormailied = get(profile, 'real_name_normalized');
+
     const possibleNames = [
       displatName,
       displatNameNormailied,
+      real_name,
+      profileRealName,
+      profileRealNameNormailied,
       name,
       id,
-      real_name,
     ];
     return possibleNames.some((x) => x === pn);
   });
