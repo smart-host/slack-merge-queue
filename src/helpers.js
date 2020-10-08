@@ -81,17 +81,13 @@ const getMembers = async ({ client, channel, ...opts }) => {
 const getUserFromName = ({ name: providedName, members }) => {
   const member = members.find(({ name, real_name, id, profile }) => {
     const pn = (providedName || '').trim();
-    const displatName = get(profile, 'display_name');
-    const displatNameNormailied = get(profile, 'display_name_normalized');
-    const profileRealName = get(profile, 'real_name');
-    const profileRealNameNormailied = get(profile, 'real_name_normalized');
 
     const possibleNames = [
-      displatName,
-      displatNameNormailied,
+      get(profile, 'display_name'),
+      get(profile, 'display_name_normalized'),
       real_name,
-      profileRealName,
-      profileRealNameNormailied,
+      get(profile, 'real_name'),
+      get(profile, 'real_name_normalized'),
       name,
       id,
     ];
