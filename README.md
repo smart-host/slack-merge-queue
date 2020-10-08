@@ -137,13 +137,13 @@ eg.
 
 ### Action Inputs
 
-| Input               | Modes  | Description                                                                                                                               |
-| ------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` |
-| channel             | _ALL_  | The slack channel to use as the merge queue <br/> **default:** `merge-queue`                                                              |
-| init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                        |
-| merge_ready_message | MERGE  | Message to be sent to the next PR in the queue <br/> **default:** `Last PR closed. This PR is now up for merge!`                          |
-| alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                  |
+| Input               | Modes  | Description                                                                                                                                                          |
+| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` <br/> **required:** `true` |
+| channel             | _ALL_  | The slack channel to use as the merge queue. can specify channel id or name <br/> **required:** `true`                                                               |
+| init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                   |
+| merge_ready_message | MERGE  | Message to be sent to the next PR in the queue <br/> **default:** `Last PR closed. This PR is now up for merge!`                                                     |
+| alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |
 
 ### Action Outputs
 
