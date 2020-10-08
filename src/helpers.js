@@ -57,7 +57,7 @@ const getMembers = async ({ client, channel, ...opts }) => {
       response_metadata,
       has_more,
     } = await client.conversations.members({
-      channel,
+      channel: channel.id,
       cursor,
       ...opts,
     });
@@ -76,6 +76,33 @@ const getMembers = async ({ client, channel, ...opts }) => {
   }
 
   return { members: results };
+};
+
+const findChannel = async ({ client, channelName, ...opts }) => {
+  let result = null;
+  let hasMore = true;
+  let cursor = undefined;
+
+  while (hasMore && !result) {
+    const {
+      channels,
+      response_metadata,
+      has_more,
+    } = await client.conversations.list({
+      ...opts,
+      cursor,
+      types: 'public_channel,private_channel',
+    });
+
+    hasMore = has_more;
+    cursor = response_metadata.next_cursor;
+
+    result = channels.find(({ id, name, name_normalized }) => {
+      return [id, name, name_normalized].some((x) => x === channelName);
+    });
+  }
+
+  return result;
 };
 
 const getUserFromName = ({ name: providedName, members }) => {
@@ -108,7 +135,7 @@ const getHistory = async ({ client, channel, ...opts }) => {
       response_metadata,
       has_more,
     } = await client.conversations.history({
-      channel,
+      channel: channel.id,
       cursor,
       ...opts,
     });
@@ -125,13 +152,17 @@ const getHistory = async ({ client, channel, ...opts }) => {
   return { messages: msgs };
 };
 
-const findPrInQueue = async ({ payload, client, filter = () => true }) => {
-  const channelName = core.getInput('channel');
+const findPrInQueue = async ({
+  payload,
+  client,
+  channel,
+  filter = () => true,
+}) => {
   const { issueNumber } = payload;
 
   const { messages: matches } = await getHistory({
     client,
-    channel: channelName,
+    channel,
   });
 
   return findLast(matches, (message, ...args) => {
@@ -139,22 +170,6 @@ const findPrInQueue = async ({ payload, client, filter = () => true }) => {
     const { issueNumber: num } = parseTag(text);
     return (
       num.trim() === issueNumber.toString() && filter(message, ...args, matches)
-    );
-  });
-};
-
-const findNextWithMergingStatus = async ({ client, payload }) => {
-  const channelName = core.getInput('channel');
-  const { issueNumber } = payload;
-  const { messages: matches } = await getHistory({
-    client,
-    channel: channelName,
-  });
-  return findLast(matches, (message) => {
-    const { text } = message;
-    const { mergeStatus, issueNumber: num } = parseTag(text);
-    return (
-      num.trim() !== issueNumber.toString() && Q_STATUS.MERGING === mergeStatus
     );
   });
 };
@@ -206,7 +221,11 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
     return undefined;
   }
 
-  const { members } = await getMembers({ ...opts, client, channel });
+  const { members } = await getMembers({
+    ...opts,
+    client,
+    channel,
+  });
 
   const attachments = ATTACH_PREFIXES.reduce((accu, next) => {
     const prefixText = comments.find((x) => x.includes(next));
@@ -233,10 +252,10 @@ module.exports = {
   buildTag,
   buildTagFromParse,
   parseTag,
-  findNextWithMergingStatus,
   getWatchers,
   buildAttachment,
   getHistory,
   getMembers,
   getUserFromName,
+  findChannel,
 };

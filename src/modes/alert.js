@@ -10,7 +10,7 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function alert({ client, payload: orgPayload }) {
+async function alert({ client, payload: orgPayload, channel }) {
   const issueNumbers = [get(orgPayload, 'pull_request.number')];
   const onlyWhenCurrent =
     core.getInput('only_when_current').toLowerCase() === 'true';
@@ -24,7 +24,7 @@ async function alert({ client, payload: orgPayload }) {
     });
   }
   const { messages = [] } = await getHistory({
-    channel: core.getInput('channel'),
+    channel,
     client,
   });
 
@@ -69,7 +69,7 @@ async function alert({ client, payload: orgPayload }) {
       thread_ts: match.ts,
       mrkdwn: true,
       text: alertText,
-      channel: core.getInput('channel'),
+      channel: channel.id,
       icon_emoji: core.getInput('icon_emoji'),
       icon_url: core.getInput('icon_url'),
     });

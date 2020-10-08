@@ -10,13 +10,12 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function initRole({ client, payload: orgPayload }) {
+async function initRole({ client, payload: orgPayload, channel }) {
   const payload = {
     ...orgPayload,
     issueNumber: get(orgPayload, 'issue.number'),
   };
   const trigger = core.getInput('init_trigger');
-  const channel = core.getInput('channel');
   const commentMsg = get(payload, 'comment.body', '');
   const state = get(payload, 'issue.state');
   const commentArr = commentMsg.split('\n').filter(Boolean);
@@ -36,6 +35,7 @@ async function initRole({ client, payload: orgPayload }) {
   const match = await findPrInQueue({
     payload,
     client,
+    channel,
     filter: ({ text }) => {
       if (!text) {
         return false;
@@ -53,7 +53,7 @@ async function initRole({ client, payload: orgPayload }) {
   core.info(`Trigger found. adding PR to queue:\n`);
   const text = getMessage(payload);
   const result = await client.chat.postMessage({
-    channel,
+    channel: channel.id,
     text,
     mrkdwn: true,
     attachments: await buildAttachment({

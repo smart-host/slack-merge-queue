@@ -15,7 +15,7 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function merge({ client, payload: orgPayload }) {
+async function merge({ client, payload: orgPayload, channel }) {
   const issueNumber = get(orgPayload, 'pull_request.number');
   const payload = {
     ...orgPayload,
@@ -24,7 +24,7 @@ async function merge({ client, payload: orgPayload }) {
   const isMerged = get(payload, 'pull_request.merged');
 
   const { messages = [] } = await getHistory({
-    channel: core.getInput('channel'),
+    channel,
     client,
   });
 
@@ -74,7 +74,7 @@ async function merge({ client, payload: orgPayload }) {
   await client.chat.update({
     ts: match.ts,
     text: tag,
-    channel: core.getInput('channel'),
+    channel: channel.id,
     icon_emoji: core.getInput('icon_emoji'),
     icon_url: core.getInput('icon_url'),
   });
@@ -111,7 +111,7 @@ async function merge({ client, payload: orgPayload }) {
       thread_ts: nextPr.ts,
       mrkdwn: true,
       text: alertText,
-      channel: core.getInput('channel'),
+      channel: channel.id,
       icon_emoji: core.getInput('icon_emoji'),
       icon_url: core.getInput('icon_url'),
     });
@@ -129,7 +129,7 @@ async function merge({ client, payload: orgPayload }) {
       await client.chat.update({
         ts: msg.ts,
         text: newTag,
-        channel: core.getInput('channel'),
+        channel: channel.id,
         icon_emoji: core.getInput('icon_emoji'),
         icon_url: core.getInput('icon_url'),
       });
