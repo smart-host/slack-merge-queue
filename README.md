@@ -4,15 +4,38 @@ handles a merge queue with github actions and slack.
 
 ## Setup
 
-### Step 1: Create or use slack web api bot
+### Step 1: Create or adjust your slack web api bot
 
 Create a slack api bot. If one exists for your organization then retrieve the Oauth token.
 
-### Step 2: Create github secret
+**Methods used:**
 
-create a github secret with name `SLACK_TOKEN` and its value the Oauth token for your slack bot.
+- [users.info](https://api.slack.com/methods/users.info)
+- [conversations.members](https://api.slack.com/methods/conversations.members)
+- [conversations.list](https://api.slack.com/methods/conversations.list)
+- [conversations.history](https://api.slack.com/methods/conversations.history)
+- [chat.postMessage](https://api.slack.com/methods/chat.postMessage)
+- [chat.update](https://api.slack.com/methods/chat.update)
 
-### Step 3: Add build configs
+NB:
+
+- Additionally, the `incoming-webhook` scope will be required.
+- Please see each method's required scopes and add them to your slack bot token.
+- If a new method is used with a new set of scopes, this will typically be a breaking change
+
+### Step 2: Install bot to channel.
+
+Once the bot is setup, install the bot to you desired channel.
+
+NB:
+
+- For private channels, please additionally invite your bot user to the channel like you would any other regular user.
+
+### Step 3: Create github secret
+
+create a github secret with name `SLACK_TOKEN` and its value the `Bot User OAuth Access Token`.
+
+### Step 4: Add build configs
 
 Add the action to your workflow. ensure the modes are used correctly as explained in the `Modes` section.
 
@@ -54,7 +77,13 @@ jobs:
 
 ### MERGE
 
-This mode updates the slack message of the current pull request. This will change the `Queue Status` from `MERGING` to either `CANCELLED` or `MERGED`. It will also send a message to alert the next Pull request in the queue when the current pull request is closed/merged.
+This mode updates the slack message of the current pull request.
+
+**Actions taken:**
+
+- It will change the `Queue Status` from `MERGING` to either `CANCELLED` or `MERGED` for current PR.
+- It will send a message to alert the next Pull request in the queue when the current pull request is closed/merged.
+- If a PR is merged ahead of one currently up for merge, The unmerged PR(s) will be marked as `STALE`
 
 sample:
 
@@ -94,8 +123,10 @@ This mode alerts the current pull request in the queue by adding a message to it
 name: sample_alert_current
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_run:
+    workflows: ['mock-workflow']
+    types:
+      - completed
 
 jobs:
   alert_current_pr:
@@ -110,11 +141,17 @@ jobs:
         with:
           mode: 'ALERT'
           channel: 'merge-queue'
-          alert_message: 'build is complete. Time to merge!'
+          alert_message: ${{ github.event.workflow.name }}  is complete. Time to merge!
       # Use the output from the `alert` step
       - name: Get the output status
         run: echo "status => ${{ steps.alert.outputs.status }}"
 ```
+
+## Build Failure Policy
+
+- Invalid required input will fail the build
+- Process errors willnot fail the build
+  - A status will be given along with an error log
 
 ## API Documentation
 
@@ -132,7 +169,7 @@ eg.
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Search Prefix | Critical piece used to search for queue tags within the channel. It is important that non-queue messages within the channel do not contain the sub string `Q-PR` |
 | PR number     | The pull request number                                                                                                                                          |
-| Queue Status  | The status of the pull request in the queue. <br/><br/> **enum**: `MERGING`, `CANCELLED`, `MERGED`                                                               |
+| Queue Status  | The status of the pull request in the queue. <br/><br/> **enum**: `MERGING`, `CANCELLED`, `MERGED`, `STALE`                                                      |
 | PR link       | A link to the pull request page. The text for the link is the pull request title                                                                                 |
 
 ### Action Inputs
@@ -140,9 +177,9 @@ eg.
 | Input               | Modes  | Description                                                                                                                                                          |
 | ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` <br/> **required:** `true` |
-| channel             | _ALL_  | The slack channel to use as the merge queue. can specify channel id or name <br/> **required:** `true`                                                               |
+| channel             | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name <br/> **required:** `true`                                                               |
 | init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                   |
-| merge_ready_message | MERGE  | Message to be sent to the next PR in the queue <br/> **default:** `Last PR closed. This PR is now up for merge!`                                                     |
+| merge_ready_message | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                         |
 | alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |
 
 ### Action Outputs

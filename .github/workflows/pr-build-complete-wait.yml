@@ -23,8 +23,8 @@ jobs:
         id: alert
         with:
           mode: 'ALERT'
-          alert_message: build is complete. Time to merge after a wait!'
-          channel: 'G01C4NFBUM7'
+          alert_message: ${{ github.event.workflow.name }} is complete. Time to merge after a wait!
+          channel: 'merge-queue'
       # Use the output from the `alert` step
       - name: Get the output status
         run: echo "status => ${{ steps.alert.outputs.status }}"
