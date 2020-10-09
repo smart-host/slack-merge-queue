@@ -8,7 +8,16 @@ handles a merge queue with github actions and slack.
 
 Create a slack api bot. If one exists for your organization then retrieve the Oauth token.
 
-**Methods used:**
+**Base required scopes:**
+
+- [chat:write.customize](https://api.slack.com/scopes/chat:write.customize)
+- [incoming-webhook](https://api.slack.com/scopes/incoming-webhook): should be enabled when the bot is added to a channel
+
+**Methods used and their scopes:**
+
+Please see each method's required scopes and add them to your slack bot token. If a new method is used with a new set of scopes, this will typically be a breaking change
+
+Methods:
 
 - [users.info](https://api.slack.com/methods/users.info)
 - [conversations.members](https://api.slack.com/methods/conversations.members)
@@ -16,12 +25,6 @@ Create a slack api bot. If one exists for your organization then retrieve the Oa
 - [conversations.history](https://api.slack.com/methods/conversations.history)
 - [chat.postMessage](https://api.slack.com/methods/chat.postMessage)
 - [chat.update](https://api.slack.com/methods/chat.update)
-
-NB:
-
-- Additionally, the `incoming-webhook` scope will be required.
-- Please see each method's required scopes and add them to your slack bot token.
-- If a new method is used with a new set of scopes, this will typically be a breaking change
 
 ### Step 2: Install bot to channel.
 
@@ -234,21 +237,7 @@ The status of the build run to give an insight into what has happened. These can
 
 ## Samples
 
-![cancelled](images/smq-cancelled.png)
-
-![merged](images/smq-merged.png)
-
 ![thread](images/smq-thread.png)
-
-### Tips:
-
-- To watch a thread in slack, manually make a comment in the message thread. you will then be alerted when events are posted to the queue item. For eg. just add a "Watching" comment to the thread of the queue item
-
-### Todos
-
-- [ ] conditionally/lazily map github user to slack user for simpler notification
-- [ ] update readme
-- [ ] maybe optimize history search to stop when non merging found
 
 ## Notes
 
