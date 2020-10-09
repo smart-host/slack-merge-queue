@@ -11,6 +11,7 @@ Create a slack api bot. If one exists for your organization then retrieve the Oa
 **Base required scopes:**
 
 - [chat:write.customize](https://api.slack.com/scopes/chat:write.customize)
+- [users:read.email](https://api.slack.com/scopes/users:read.email)
 - [incoming-webhook](https://api.slack.com/scopes/incoming-webhook): should be enabled when the bot is added to a channel
 
 **Methods used and their scopes:**
