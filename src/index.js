@@ -32,8 +32,18 @@ const client = new WebClient(token);
     return core.setFailed(`could not find channel in slack: ${channelName}`);
   }
 
+  const chatOptions = {};
+  const icon_emoji = core.getInput('icon_emoji');
+  const icon_url = core.getInput('icon_url');
+
+  if (icon_url) {
+    chatOptions.icon_url = icon_url;
+  } else {
+    chatOptions.icon_emoji = icon_emoji;
+  }
+
   try {
-    await mode({ client, payload, channel, actionContext });
+    await mode({ client, payload, channel, actionContext, chatOptions });
   } catch (error) {
     setActionStatus(STATUS.FAILED);
     core.error(error.message);

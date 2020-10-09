@@ -10,7 +10,7 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function alert({ client, payload: orgPayload, channel }) {
+async function alert({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumbers = [get(orgPayload, 'pull_request.number')];
   const onlyWhenCurrent =
     core.getInput('only_when_current').toLowerCase() === 'true';
@@ -66,12 +66,11 @@ async function alert({ client, payload: orgPayload, channel }) {
     const alertText = `${alertMsg}${watchers}`;
 
     await client.chat.postMessage({
+      ...chatOptions,
       thread_ts: match.ts,
       mrkdwn: true,
       text: alertText,
       channel: channel.id,
-      icon_emoji: core.getInput('icon_emoji'),
-      icon_url: core.getInput('icon_url'),
     });
   });
 

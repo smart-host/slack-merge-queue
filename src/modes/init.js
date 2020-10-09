@@ -10,7 +10,7 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function initRole({ client, payload: orgPayload, channel }) {
+async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
   const payload = {
     ...orgPayload,
     issueNumber: get(orgPayload, 'issue.number'),
@@ -53,6 +53,7 @@ async function initRole({ client, payload: orgPayload, channel }) {
   core.info(`Trigger found. adding PR to queue:\n`);
   const text = getMessage(payload);
   const result = await client.chat.postMessage({
+    ...chatOptions,
     channel: channel.id,
     text,
     mrkdwn: true,
@@ -61,8 +62,6 @@ async function initRole({ client, payload: orgPayload, channel }) {
       client,
       channel,
     }),
-    icon_emoji: core.getInput('icon_emoji'),
-    icon_url: core.getInput('icon_url'),
   });
   core.info(JSON.stringify(result, null, 2));
 

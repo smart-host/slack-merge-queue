@@ -15,7 +15,7 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function merge({ client, payload: orgPayload, channel }) {
+async function merge({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumber = get(orgPayload, 'pull_request.number');
   const payload = {
     ...orgPayload,
@@ -72,11 +72,10 @@ async function merge({ client, payload: orgPayload, channel }) {
   }
 
   await client.chat.update({
+    ...chatOptions,
     ts: match.ts,
     text: tag,
     channel: channel.id,
-    icon_emoji: core.getInput('icon_emoji'),
-    icon_url: core.getInput('icon_url'),
   });
 
   const mergingFilter = ({ text }) => {
@@ -108,12 +107,11 @@ async function merge({ client, payload: orgPayload, channel }) {
     const alertText = `${alertMsg}${watchers}`;
 
     await client.chat.postMessage({
+      ...chatOptions,
       thread_ts: nextPr.ts,
       mrkdwn: true,
       text: alertText,
       channel: channel.id,
-      icon_emoji: core.getInput('icon_emoji'),
-      icon_url: core.getInput('icon_url'),
     });
   }
 
@@ -127,11 +125,10 @@ async function merge({ client, payload: orgPayload, channel }) {
       });
 
       await client.chat.update({
+        ...chatOptions,
         ts: msg.ts,
         text: newTag,
         channel: channel.id,
-        icon_emoji: core.getInput('icon_emoji'),
-        icon_url: core.getInput('icon_url'),
       });
     });
 

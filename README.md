@@ -103,7 +103,7 @@ This mode updates the slack message of the current pull request.
 
 - It will change the `Queue Status` from `MERGING` to either `CANCELLED` or `MERGED` for current PR.
 - It will send a message to alert the next Pull request in the queue when the current pull request is closed/merged.
-- If a PR is merged ahead of one currently up for merge, The unmerged PR(s) will be marked as `STALE`
+- If a PR is merged ahead of one currently up for merge, The unmerged PR(s) will be marked as `STALE`. They can be added to the queue again by re-triggering the `INIT` mode.
 
 sample:
 
@@ -209,9 +209,12 @@ eg.
 | ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` <br/> **required:** `true` |
 | channel             | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name <br/> **required:** `true`                                                               |
+| icon_emoji          | _ALL_  | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                           |
+| icon_url            | _ALL_  | An image url to use as the bot's avatar. Overrides `icon_emoji`. <br/> **default:** `undefined`                                                                      |
 | init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                   |
 | merge_ready_message | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                         |
-| alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |
+| alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |  |
+| only_when_current   | ALERT  | When `true`, will only sent an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                     |
 
 ### Action Outputs
 
