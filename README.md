@@ -137,7 +137,9 @@ jobs:
 
 ### ALERT
 
-This mode alerts the current pull request in the queue by adding a message to its thread. Typically this can be used to alert the thread when the build/workflow is complete but can be used at any point in the build process based on your use case. If used to alert when the build is complete, ensure the proper dependencies are set to ensure the job is run last or close to last as a post build step.
+This mode alerts the current pull request in the queue by adding a message to its thread.
+Typically this can be used to alert the thread when the build/workflow is complete but can be used at any point in the build process based on your use case.
+If used to alert when the build is complete, ensure the proper dependencies are set to ensure the job is run last or close to last as a post build step.
 
 simple example:
 
