@@ -229,7 +229,7 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
   });
 
   const attachments = ATTACH_PREFIXES.reduce((accu, next) => {
-    const prefixText = comments.find((x) => x.includes(next));
+    const prefixText = comments.find((x) => x.startsWith(next));
     const process = processors[next] || ((text) => text);
 
     if (!prefixText) {

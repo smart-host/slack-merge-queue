@@ -28,11 +28,11 @@ Methods:
 
 ### Step 2: Install bot to channel.
 
-Once the bot is setup, install the bot to you desired channel.
+Once the bot is setup, install the bot to your desired channel.
 
 NB:
 
-- For private channels, please additionally invite your bot user to the channel like you would any other regular user.
+- For private channels, please additionally invite your bot user to the channel just as if you would invite any regular user.
 
 ### Step 3: Create github secret
 
@@ -40,7 +40,7 @@ create a github secret with name `SLACK_TOKEN` and its value the `Bot User OAuth
 
 ### Step 4: Add build configs
 
-Add the action to your workflow. ensure the modes are used correctly as explained in the `Modes` section.
+Add the actions to your workflow. ensure the modes are used correctly as explained in the `Modes` section.
 
 ## Modes
 
@@ -78,13 +78,13 @@ jobs:
         run: echo "status => ${{ steps.add_to_q.outputs.status }}"
 ```
 
-Additionally, you can set slack users to be notified within slack by using a `notify:` tag in the comment. This is a comma seperated list of user references. The user reference can be the users:
+Additionally, you can set slack users to be notified by using a `notify:` tag in the comment on a new line. This is a comma seperated list of user references. The user reference can be the users:
 
 - slack user id
 - slack user's full name
 - slack display name
 - slack username
-- email username portion **john.doe**@smq.com
+- email username portion (eg. **john.doe**@smq.com)
 
 Please note that these references are case sensitive
 
