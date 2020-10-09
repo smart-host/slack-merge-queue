@@ -78,7 +78,7 @@ jobs:
         run: echo "status => ${{ steps.add_to_q.outputs.status }}"
 ```
 
-Additionally, you can set slack users to be notified by using a `notify:` tag in the comment on a new line. This is a comma seperated list of user references. The user reference can be the users:
+Additionally, you can set slack users to be notified by using a `notify:` tag in the comment on a new line. This is a comma seperated list of user references. The user reference can be the:
 
 - slack user id
 - slack user's full name
