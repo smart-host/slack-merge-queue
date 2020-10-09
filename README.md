@@ -75,6 +75,23 @@ jobs:
         run: echo "status => ${{ steps.add_to_q.outputs.status }}"
 ```
 
+Additionally, you can set slack users to be notified within slack by using a `notify:` tag in the comment. This is a comma seperated list of user references. The user reference can be the users:
+
+- slack user id
+- slack user's full name
+- slack display name
+- slack username
+- email username portion **john.doe**@smq.com
+
+Please note that these references are case sensitive
+
+eg.
+
+```
+/merging
+notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
+```
+
 ### MERGE
 
 This mode updates the slack message of the current pull request.
@@ -117,13 +134,23 @@ jobs:
 
 ### ALERT
 
-This mode alerts the current pull request in the queue by adding a message to its thread. Typically this can be used to alert the thread when the build is complete but can be used at any point in the build process based on your use case. If used to alert when the build is complete, ensure the proper dependencies are set to ensure the job is run last or close to last as a post build step.
+This mode alerts the current pull request in the queue by adding a message to its thread. Typically this can be used to alert the thread when the build/workflow is complete but can be used at any point in the build process based on your use case. If used to alert when the build is complete, ensure the proper dependencies are set to ensure the job is run last or close to last as a post build step.
+
+simple example:
+
+- [pr-build-complete.yml](.github/workflows/pr-build-complete.yml)
+
+workflow completed example:
+
+- [pr-build-complete-wait.yml](.github/workflows/pr-build-complete-wait.yml)
+- [dummy-build.yml](.github/workflows/dummy-build.yml)
 
 ```yaml
 name: sample_alert_current
 
 on:
   workflow_run:
+    # will trigger alert for each workflow listed
     workflows: ['mock-workflow']
     types:
       - completed
@@ -141,7 +168,8 @@ jobs:
         with:
           mode: 'ALERT'
           channel: 'merge-queue'
-          alert_message: ${{ github.event.workflow.name }}  is complete. Time to merge!
+          # the following variable is only available in 'workflow_run' event
+          alert_message: ${{ github.event.workflow.name }}  is complete!
       # Use the output from the `alert` step
       - name: Get the output status
         run: echo "status => ${{ steps.alert.outputs.status }}"

@@ -110,13 +110,14 @@ const getUserFromName = ({ name: providedName, members }) => {
     const pn = (providedName || '').trim();
 
     const possibleNames = [
+      id,
+      name,
+      get(profile, 'email', '').split('@')[0],
       get(profile, 'display_name'),
       get(profile, 'display_name_normalized'),
       real_name,
       get(profile, 'real_name'),
       get(profile, 'real_name_normalized'),
-      name,
-      id,
     ];
     return possibleNames.some((x) => x === pn);
   });
