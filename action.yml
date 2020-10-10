@@ -1,4 +1,7 @@
 name: 'Slack Merge Queue'
+branding:
+  icon: 'bell'
+  color: 'green'
 description: 'handles a merge queue within slack'
 inputs:
   mode:
