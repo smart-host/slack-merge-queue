@@ -85,7 +85,7 @@ Additionally, you can set slack users to be notified by using a `notify:` tag in
 - slack member's full name
 - slack display name
 - slack username
-- email username portion (eg. **john.doe**@smq.com)
+- email username portion (eg. _**john.doe**_@smq.com)
 
 Please note that these references are case sensitive
 
