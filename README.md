@@ -4,9 +4,9 @@ handles a merge queue with github actions and slack.
 
 ## Setup
 
-### Step 1: Create or adjust your slack web api bot
+### Step 1: Create a slack web api bot
 
-Create a slack api bot. If one exists for your organization then retrieve the Oauth token.
+Create a slack api bot and setup the following permissions
 
 **Base required scopes:**
 
@@ -81,8 +81,8 @@ jobs:
 
 Additionally, you can set slack users to be notified by using a `notify:` tag in the comment on a new line. This is a comma seperated list of user references. The user reference can be the:
 
-- slack user id
-- slack user's full name
+- slack member id
+- slack member's full name
 - slack display name
 - slack username
 - email username portion (eg. **john.doe**@smq.com)
@@ -211,13 +211,13 @@ eg.
 | Input               | Modes  | Description                                                                                                                                                          |
 | ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` <br/> **required:** `true` |
-| channel             | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name <br/> **required:** `true`                                                               |
+| channel             | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`               |
 | icon_emoji          | _ALL_  | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                           |
 | icon_url            | _ALL_  | An image url to use as the bot's avatar. Overrides `icon_emoji`. <br/> **default:** `undefined`                                                                      |
 | init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                   |
 | merge_ready_message | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                         |
 | alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |  |
-| only_when_current   | ALERT  | When `true`, will only sent an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                     |
+| only_when_current   | ALERT  | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                     |
 
 ### Action Outputs
 
