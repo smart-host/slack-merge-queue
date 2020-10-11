@@ -184,7 +184,7 @@ jobs:
 ## Build Failure Policy
 
 - Invalid required input will fail the build
-- Process errors willnot fail the build
+- Process errors will not fail the build
   - A status will be given along with an error log
 
 ## API Documentation
