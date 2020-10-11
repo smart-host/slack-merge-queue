@@ -133,7 +133,7 @@ jobs:
       - name: Get the output status
         run: echo "status => ${{ steps.update_q_on_close.outputs.status }}"
       - name: Get the next PR number
-        run: echo "status => ${{ steps.update_q_on_close.outputs.next_pr }}"
+        run: echo "next pr => ${{ steps.update_q_on_close.outputs.next_pr }}"
 ```
 
 ### ALERT
@@ -199,12 +199,12 @@ eg.
 
 `Q-PR :: 3 :: MERGED :: chore: add package keyword`
 
-| Section       | Description                                                                                                                                                      |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Search Prefix | Critical piece used to search for queue tags within the channel. It is important that non-queue messages within the channel do not contain the sub string `Q-PR` |
-| PR number     | The pull request number                                                                                                                                          |
-| Queue Status  | The status of the pull request in the queue. <br/><br/> **enum**: `MERGING`, `CANCELLED`, `MERGED`, `STALE`                                                      |
-| PR link       | A link to the pull request page. The text for the link is the pull request title                                                                                 |
+| Section       | Description                                                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search Prefix | Critical piece used to search for queue tags within the channel. It is important that non-queue messages within the channel do not start with the sub string `Q-PR` |
+| PR number     | The pull request number                                                                                                                                             |
+| Queue Status  | The status of the pull request in the queue. <br/><br/> **enum**: `MERGING`, `CANCELLED`, `MERGED`, `STALE`                                                         |
+| PR link       | A link to the pull request page. The text for the link is the pull request title                                                                                    |
 
 ### Action Inputs
 

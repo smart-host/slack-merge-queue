@@ -25,4 +25,4 @@ jobs:
       - name: Get the output status
         run: echo "status => ${{ steps.update_q_on_close.outputs.status }}"
       - name: Get the next PR number
-        run: echo "status => ${{ steps.update_q_on_close.outputs.next_pr }}"
+        run: echo "next pr => ${{ steps.update_q_on_close.outputs.next_pr }}"

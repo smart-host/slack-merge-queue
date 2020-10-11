@@ -146,7 +146,7 @@ const getHistory = async ({ client, channel, ...opts }) => {
 
     msgs = [
       ...msgs,
-      ...messages.filter(({ text }) => text.includes(SEARCH_PREFIX)),
+      ...messages.filter(({ text }) => text.startsWith(SEARCH_PREFIX)),
     ];
   }
 
