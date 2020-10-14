@@ -7,6 +7,7 @@ const {
   setActionStatus,
   buildAttachment,
   parseTag,
+  arraysEqual,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -45,8 +46,37 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     },
   });
 
+  const attachments =
+    (await buildAttachment({
+      comments: commentArr,
+      client,
+      channel,
+    })) || [];
+
+  const oldAttachments = get(match, 'attachments', []);
+  const attachmentsChanged = !arraysEqual(attachments, oldAttachments);
+
+  core.info(`Message exists: ${!!match}`);
+  core.info(`Attachments changed: ${attachmentsChanged}`);
+  core.debug(`Old attachments: ${JSON.stringify(oldAttachments, null, 2)}`);
+  core.info(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
+
+  if (!!match && attachmentsChanged) {
+    const updatedMsg = await client.chat.update({
+      ...chatOptions,
+      ts: match.ts,
+      text: match.text,
+      channel: channel.id,
+      attachments,
+    });
+
+    core.debug(JSON.stringify(updatedMsg, null, 2));
+    return setActionStatus(STATUS.ATTACHMENTS_UPDATED);
+  }
+
   if (match) {
-    core.info(`PR already in queue:\n ${JSON.stringify(match, null, 2)}`);
+    core.info(`PR already in queue:`);
+    core.info(JSON.stringify(match, null, 2));
     return setActionStatus(STATUS.ALREADY_QUEUED);
   }
 
@@ -57,11 +87,7 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     channel: channel.id,
     text,
     mrkdwn: true,
-    attachments: await buildAttachment({
-      comments: commentArr,
-      client,
-      channel,
-    }),
+    attachments,
   });
   core.info(JSON.stringify(result, null, 2));
 

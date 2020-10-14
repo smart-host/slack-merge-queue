@@ -1,6 +1,9 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
 const findLast = require('lodash/findLast');
+const uniq = require('lodash/uniq');
+const isMatch = require('lodash/isMatch');
+const size = require('lodash/size');
 
 const {
   DELIM,
@@ -193,7 +196,7 @@ const getWatchers = (match) => {
 const processors = {
   [ATTACH_PREFIX.NOTIFY]: ({ text, members }) => {
     const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
-    const users = usersArr
+    const userRefs = usersArr
       .map((user) => {
         const { id } = getUserFromName({ name: user.trim(), members }) || {};
         if (!id) {
@@ -202,8 +205,8 @@ const processors = {
 
         return `<@${id}>`;
       })
-      .filter(Boolean)
-      .join(', ');
+      .filter(Boolean);
+    const users = uniq(userRefs).join(', ');
 
     if (!users) {
       return undefined;
@@ -246,6 +249,19 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
   return attachments;
 };
 
+const arraysEqual = (arr1, arr2) => {
+  if (
+    [arr1, arr2].some((x) => !Array.isArray(x)) ||
+    !(size(arr1) == size(arr2))
+  ) {
+    return false;
+  }
+
+  return arr1.every((x, i) => {
+    return isMatch(x, arr2[i]);
+  });
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -259,4 +275,5 @@ module.exports = {
   getMembers,
   getUserFromName,
   findChannel,
+  arraysEqual,
 };
