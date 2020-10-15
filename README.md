@@ -96,7 +96,10 @@ eg.
 notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
 ```
 
-**Tip:** Editing the `notify:` list or adding a new comment with `/merging` will update the watchers list in slack. Only the watchers list can be updated by a comment change once a pull request is in the queue.
+**Tips:**
+
+- You can update the `notify:` list in slack by editing an existing `INIT` comment.
+  - Only the watchers list can be updated by a comment change once a pull request is in the queue.
 
 ### MERGE
 
@@ -230,18 +233,18 @@ this is the `PR number` for the next pull request in the queue. This is only exp
 
 The status of the build run to give an insight into what has happened. These can be useful for taking additional actions in a workflow
 
-| Status              | Modes        | Description                                                                                  |
-| ------------------- | ------------ | -------------------------------------------------------------------------------------------- |
-| ALREADY_CLOSED      | INIT         | exported when the trigger is used but the pull request is already in a closed state.         |
-| TRIGGER_NOT_FOUND   | INIT         | exported if a pull request comment does not contain the desired trigger                      |
-| ATTACHMENTS_UPDATED | INIT         | exported when a PR is already in the queue but attachments have been updated                 |
-| ALREADY_QUEUED      | INIT         | exported when a PR is already added to the slack queue                                       |
-| ADDED_TO_QUEUE      | INIT         | exported when the pull request has been added to the slack queue                             |
-| NOT_FOUND           | ALERT, MERGE | exported when a queue tag is not found in slack                                              |
-| COMPLETED           | ALERT        | exported when an unspecific action is complete. one such action is the generic alert action. |
-| CANCELLED           | MERGE        | exported when the build tag status has been updated to cancelled                             |
-| MERGED              | MERGE        | exported when the build tag status has been updated to merged                                |
-| FAILED              | _ALL_        | When any failure occurs then this status will be set for all modes                           |
+| Status            | Modes        | Description                                                                                  |
+| ----------------- | ------------ | -------------------------------------------------------------------------------------------- |
+| ALREADY_CLOSED    | INIT         | exported when the trigger is used but the pull request is already in a closed state.         |
+| TRIGGER_NOT_FOUND | INIT         | exported if a pull request comment does not contain the desired trigger                      |
+| WATCHERS_UPDATED  | INIT         | exported when a PR is already in the queue but watchers list has been updated                |
+| ALREADY_QUEUED    | INIT         | exported when a PR is already added to the slack queue                                       |
+| ADDED_TO_QUEUE    | INIT         | exported when the pull request has been added to the slack queue                             |
+| NOT_FOUND         | ALERT, MERGE | exported when a queue tag is not found in slack                                              |
+| COMPLETED         | ALERT        | exported when an unspecific action is complete. one such action is the generic alert action. |
+| CANCELLED         | MERGE        | exported when the build tag status has been updated to cancelled                             |
+| MERGED            | MERGE        | exported when the build tag status has been updated to merged                                |
+| FAILED            | _ALL_        | When any failure occurs then this status will be set for all modes                           |
 
 ## Samples
 

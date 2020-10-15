@@ -215,7 +215,7 @@ const processors = {
       title: WATCHERS_TITLE,
       mrkdwn_in: ['text'],
       color: '#36a64f',
-      fields: [{ value: users }],
+      fields: [{ title: '', short: false, value: users }],
     };
   },
 };

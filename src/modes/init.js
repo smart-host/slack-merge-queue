@@ -8,6 +8,7 @@ const {
   buildAttachment,
   parseTag,
   arraysEqual,
+  getWatchers,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -53,15 +54,17 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
       channel,
     })) || [];
 
+  const eventAction = payload.action.toLowerCase();
   const oldAttachments = get(match, 'attachments', []);
-  const attachmentsChanged = !arraysEqual(attachments, oldAttachments);
+  const watchersChanged = getWatchers(match) !== getWatchers({ attachments });
 
+  core.info(`Event action: ${eventAction}`);
   core.info(`Message exists: ${!!match}`);
-  core.info(`Attachments changed: ${attachmentsChanged}`);
+  core.info(`Watchers changed: ${watchersChanged}`);
   core.debug(`Old attachments: ${JSON.stringify(oldAttachments, null, 2)}`);
   core.info(`Attachments: ${JSON.stringify(attachments, null, 2)}`);
 
-  if (!!match && attachmentsChanged) {
+  if (!!match && watchersChanged && eventAction === 'edited') {
     const updatedMsg = await client.chat.update({
       ...chatOptions,
       ts: match.ts,
@@ -71,7 +74,7 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     });
 
     core.debug(JSON.stringify(updatedMsg, null, 2));
-    return setActionStatus(STATUS.ATTACHMENTS_UPDATED);
+    return setActionStatus(STATUS.WATCHERS_UPDATED);
   }
 
   if (match) {
