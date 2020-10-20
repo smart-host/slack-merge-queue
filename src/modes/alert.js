@@ -17,10 +17,10 @@ async function alert({ client, payload: orgPayload, channel, chatOptions }) {
 
   if (get(orgPayload, 'workflow_run')) {
     get(orgPayload, 'workflow_run.pull_requests', []).forEach(({ number }) => {
-      if (issueNumbers.includes(number)) {
+      if (issueNumbers.includes(number.toString())) {
         return null;
       }
-      issueNumbers.push(number);
+      issueNumbers.push(number.toString());
     });
   }
   const { messages = [] } = await getHistory({
@@ -28,30 +28,29 @@ async function alert({ client, payload: orgPayload, channel, chatOptions }) {
     client,
   });
 
+  let messagesToAlert = [];
   const matches = messages.filter(({ text }) => {
     const { mergeStatus } = parseTag(text);
     return mergeStatus === Q_STATUS.MERGING;
   });
 
   const highestPriorityIndex = matches.length - 1;
+  const filteredIssues = issueNumbers.filter(Boolean);
   core.info(`Queue size: ${matches.length}`);
   core.info(`Highest priority index: ${highestPriorityIndex} \n`);
 
-  const promises = issueNumbers.filter(Boolean).map(async (issueNumber) => {
-    const prTag = `PR${issueNumber}: `;
-    const match = findLast(matches, (message, i) => {
-      const { text } = message;
-      const { issueNumber: num } = parseTag(text);
-      const isCurrentPR = num.trim() === (issueNumber || '').toString();
-      const shouldAlert =
-        !onlyWhenCurrent || (onlyWhenCurrent && i === highestPriorityIndex);
-      if (isCurrentPR) {
-        core.info(`${prTag}index is ${i}`);
-      }
-      return shouldAlert && isCurrentPR;
-    });
+  if (onlyWhenCurrent) {
+    messagesToAlert = [matches[highestPriorityIndex]];
+  } else {
+    messagesToAlert = [...matches];
+  }
 
-    if (!match) {
+  const promises = messagesToAlert.map(async (match) => {
+    const { text } = match;
+    const { issueNumber: num } = parseTag(text);
+    const prTag = `PR${num}: `;
+
+    if (!filteredIssues.includes(num.toString())) {
       core.info(
         `${prTag}Could not find pull request in queue or did not satisfy filters`,
       );
@@ -65,13 +64,14 @@ async function alert({ client, payload: orgPayload, channel, chatOptions }) {
     const alertMsg = core.getInput('alert_message');
     const alertText = `${alertMsg}${watchers}`;
 
-    await client.chat.postMessage({
+    const result = await client.chat.postMessage({
       ...chatOptions,
       thread_ts: match.ts,
       mrkdwn: true,
       text: alertText,
       channel: channel.id,
     });
+    return result;
   });
 
   await Promise.all(promises);
