@@ -101,6 +101,51 @@ notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
 - You can update the `notify:` list in slack by editing an existing `INIT` comment.
   - Only the watchers list can be updated by a comment change once a pull request is in the queue.
 
+### CANCEL
+
+This mode manually sets the status of a PR in the queue to `CANCELLED` without needing to close a pull request. This can be considered a temporary cancel. To trigger this mode a comment can be made on the pull request with the desired or default trigger phrase.
+
+eg.
+
+```
+/cancel-merge
+```
+
+**Actions taken:**
+
+- It will change the `Queue Status` from `MERGING` to either `CANCELLED`.
+- It will send a message to alert the next pull request in the queue when the current pull request is cancelled. Alert is only sent if the next PR is the next in line to be merged.
+
+sample:
+
+```yaml
+name: sample_cancel_in_queue
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  add_to_queue:
+    env: # Or as an environment variable
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+    runs-on: ubuntu-latest
+    name: Cancel PR in queue
+    steps:
+      - name: Cancel PR in queue
+        uses: lwhiteley/slack-merge-queue@{version}
+        id: cancel_pr
+        with:
+          init_trigger: '/cancel-merge'
+          mode: 'CANCEL'
+          channel: 'merge-queue'
+      # Use the output from the `cancel_pr` step
+      - name: Get the output
+        run: echo "status => ${{ steps.cancel_pr.outputs.status }}"
+      - name: Get the next PR number
+        run: echo "next pr => ${{ steps.cancel_pr.outputs.next_pr }}"
+```
+
 ### MERGE
 
 This mode updates the slack message of the current pull request.
@@ -179,8 +224,8 @@ jobs:
         with:
           mode: 'ALERT'
           channel: 'merge-queue'
-          # the following variable is only available in 'workflow_run' event
-          alert_message: ${{ github.event.workflow.name }}  is complete!
+          # the following variables are only available in 'workflow_run' event
+          alert_message: '`${{ github.event.workflow.name }}` is complete with status `${{ github.event.workflow_run.conclusion }}`!'
       # Use the output from the `alert` step
       - name: Get the output status
         run: echo "status => ${{ steps.alert.outputs.status }}"
@@ -213,38 +258,40 @@ eg.
 
 ### Action Inputs
 
-| Input               | Modes  | Description                                                                                                                                                          |
-| ------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| mode                | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `MERGE`, `ALERT` <br/> **required:** `true` |
-| channel             | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`               |
-| icon_emoji          | _ALL_  | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                           |
-| init_trigger        | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                   |
-| merge_ready_message | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                         |
-| alert_message       | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                             |  |
-| only_when_current   | ALERT  | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                     |
+| Input                | Modes  | Description                                                                                                                                                                    |
+| -------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| mode                 | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
+| channel              | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
+| icon_emoji           | _ALL_  | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
+| init_trigger         | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                             |
+| cancel_trigger       | CANCEL | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
+| cancel_ready_message | CANCEL | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Last PR closed. This PR is now up for merge!`                                    |
+| merge_ready_message  | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
+| alert_message        | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
+| only_when_current    | ALERT  | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                               |
 
 ### Action Outputs
 
 #### next_pr
 
-this is the `PR number` for the next pull request in the queue. This is only exported by the `MERGE` mode.
+this is the `PR number` for the next pull request in the queue. This is only exported by the `MERGE` and `CANCEL` modes.
 
 #### status
 
 The status of the build run to give an insight into what has happened. These can be useful for taking additional actions in a workflow
 
-| Status            | Modes        | Description                                                                                  |
-| ----------------- | ------------ | -------------------------------------------------------------------------------------------- |
-| ALREADY_CLOSED    | INIT         | exported when the trigger is used but the pull request is already in a closed state.         |
-| TRIGGER_NOT_FOUND | INIT         | exported if a pull request comment does not contain the desired trigger                      |
-| WATCHERS_UPDATED  | INIT         | exported when a PR is already in the queue but watchers list has been updated                |
-| ALREADY_QUEUED    | INIT         | exported when a PR is already added to the slack queue                                       |
-| ADDED_TO_QUEUE    | INIT         | exported when the pull request has been added to the slack queue                             |
-| NOT_FOUND         | ALERT, MERGE | exported when a queue tag is not found in slack                                              |
-| COMPLETED         | ALERT        | exported when an unspecific action is complete. one such action is the generic alert action. |
-| CANCELLED         | MERGE        | exported when the build tag status has been updated to cancelled                             |
-| MERGED            | MERGE        | exported when the build tag status has been updated to merged                                |
-| FAILED            | _ALL_        | When any failure occurs then this status will be set for all modes                           |
+| Status            | Modes                | Description                                                                                  |
+| ----------------- | -------------------- | -------------------------------------------------------------------------------------------- |
+| ALREADY_CLOSED    | INIT, CANCEL         | exported when the trigger is used but the pull request is already in a closed state.         |
+| TRIGGER_NOT_FOUND | INIT, CANCEL         | exported if a pull request comment does not contain the desired trigger                      |
+| WATCHERS_UPDATED  | INIT                 | exported when a PR is already in the queue but watchers list has been updated                |
+| ALREADY_QUEUED    | INIT                 | exported when a PR is already added to the slack queue                                       |
+| ADDED_TO_QUEUE    | INIT                 | exported when the pull request has been added to the slack queue                             |
+| NOT_FOUND         | ALERT, MERGE, CANCEL | exported when a queue tag is not found in slack                                              |
+| COMPLETED         | ALERT                | exported when an unspecific action is complete. one such action is the generic alert action. |
+| CANCELLED         | MERGE, CANCEL        | exported when the build tag status has been updated to cancelled                             |
+| MERGED            | MERGE                | exported when the build tag status has been updated to merged                                |
+| FAILED            | _ALL_                | When any failure occurs then this status will be set for all modes                           |
 
 ## Samples
 

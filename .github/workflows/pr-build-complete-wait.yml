@@ -23,7 +23,7 @@ jobs:
         id: alert
         with:
           mode: 'ALERT'
-          alert_message: ${{ github.event.workflow.name }} is complete!
+          alert_message: '`${{ github.event.workflow.name }}` is complete with status `${{ github.event.workflow_run.conclusion }}`!'
           channel: 'merge-queue'
       # Use the output from the `alert` step
       - name: Get the output status

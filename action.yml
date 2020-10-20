@@ -29,7 +29,7 @@ inputs:
   cancel_ready_message:
     description: 'message for alerting next PR in the queue after manual cancel'
     required: false
-    default: 'Previous PR was manually cancelled. This PR is now up for merge!'
+    default: 'Previous PR merge was temporarily cancelled. This PR is now up for merge!'
   alert_message:
     description: 'message for alerting current PR in the queue'
     required: false
