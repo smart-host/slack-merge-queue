@@ -249,17 +249,9 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
   return attachments;
 };
 
-const arraysEqual = (arr1, arr2) => {
-  if (
-    [arr1, arr2].some((x) => !Array.isArray(x)) ||
-    !(size(arr1) == size(arr2))
-  ) {
-    return false;
-  }
-
-  return arr1.every((x, i) => {
-    return isMatch(x, arr2[i]);
-  });
+const getFormattedComment = ({ payload }) => {
+  const commentMsg = get(payload, 'comment.body', '');
+  return commentMsg.split('\n').filter(Boolean);
 };
 
 module.exports = {
@@ -275,5 +267,5 @@ module.exports = {
   getMembers,
   getUserFromName,
   findChannel,
-  arraysEqual,
+  getFormattedComment,
 };

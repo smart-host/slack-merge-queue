@@ -7,8 +7,8 @@ const {
   setActionStatus,
   buildAttachment,
   parseTag,
-  arraysEqual,
   getWatchers,
+  getFormattedComment,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -18,9 +18,8 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     issueNumber: get(orgPayload, 'issue.number'),
   };
   const trigger = core.getInput('init_trigger');
-  const commentMsg = get(payload, 'comment.body', '');
   const state = get(payload, 'issue.state');
-  const commentArr = commentMsg.split('\n').filter(Boolean);
+  const commentArr = getFormattedComment({ payload });
 
   core.info(`comment:\n ${JSON.stringify(commentArr)}\n`);
 
