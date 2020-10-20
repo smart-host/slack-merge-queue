@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
+const size = require('lodash/size');
 
 const {
   setActionStatus,
@@ -40,7 +41,7 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
     client,
   });
 
-  const { nextPr, current: match } = organizeHistory({
+  const { older, nextPr, current: match } = organizeHistory({
     messages,
     issueNumber,
   });
@@ -66,7 +67,11 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
 
   setActionStatus(Q_STATUS.CANCELLED);
 
-  if (nextPr) {
+  const isNextPrReady = nextPr && size(older) < 1;
+
+  core.info(`is next PR up for merge?: ${isNextPrReady}`);
+
+  if (isNextPrReady) {
     core.info(`next PR: \n${JSON.stringify(nextPr, null, 2)}`);
 
     const { issueNumber: nextPrNum } = parseTag(nextPr.text);
