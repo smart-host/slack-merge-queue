@@ -1,9 +1,6 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
 const findLastIndex = require('lodash/findLastIndex');
-const takeWhile = require('lodash/takeWhile');
-const takeRightWhile = require('lodash/takeRightWhile');
-const takeRight = require('lodash/takeRight');
 
 const {
   setActionStatus,
@@ -12,6 +9,7 @@ const {
   parseTag,
   getHistory,
   getWatchers,
+  organizeHistory,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -28,14 +26,10 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
     client,
   });
 
-  const matchIndex = findLastIndex(messages, (message) => {
-    const { text } = message;
-    const { issueNumber: num, mergeStatus } = parseTag(text);
-    const isCurrentPR = num.trim() === (issueNumber || '').toString();
-    return isCurrentPR && mergeStatus === Q_STATUS.MERGING;
+  const { nextPr, older, current: match } = organizeHistory({
+    messages,
+    issueNumber,
   });
-
-  const match = messages[matchIndex];
 
   const commonTagProps = {
     issueNumber,
@@ -77,24 +71,6 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
     text: tag,
     channel: channel.id,
   });
-
-  const mergingFilter = ({ text }) => {
-    if (!text) {
-      return false;
-    }
-    const { mergeStatus } = parseTag(text);
-    return mergeStatus === Q_STATUS.MERGING;
-  };
-
-  const newer = takeWhile(messages, (_, i) => i < matchIndex).filter(
-    mergingFilter,
-  );
-  const older = takeRightWhile(messages, (_, i) => i > matchIndex).filter(
-    mergingFilter,
-  );
-
-  // alert next in queue
-  const nextPr = takeRight(newer)[0];
 
   if (nextPr) {
     core.info(`next PR: \n${JSON.stringify(nextPr, null, 2)}`);

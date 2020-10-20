@@ -2,8 +2,10 @@ const core = require('@actions/core');
 const get = require('lodash/get');
 const findLast = require('lodash/findLast');
 const uniq = require('lodash/uniq');
-const isMatch = require('lodash/isMatch');
-const size = require('lodash/size');
+const takeWhile = require('lodash/takeWhile');
+const takeRightWhile = require('lodash/takeRightWhile');
+const takeRight = require('lodash/takeRight');
+const findLastIndex = require('lodash/findLastIndex');
 
 const {
   DELIM,
@@ -181,7 +183,7 @@ const findPrInQueue = async ({
 const getWatchers = (match) => {
   let watchers = '';
 
-  if (Array.isArray(match.attachments)) {
+  if (match && Array.isArray(match.attachments)) {
     const { fields } =
       match.attachments.find(({ title }) => title.includes(WATCHERS_TITLE)) ||
       {};
@@ -254,6 +256,42 @@ const getFormattedComment = ({ payload }) => {
   return commentMsg.split('\n').filter(Boolean);
 };
 
+const mergingFilter = ({ text }) => {
+  if (!text) {
+    return false;
+  }
+  const { mergeStatus } = parseTag(text);
+  return mergeStatus === Q_STATUS.MERGING;
+};
+
+const organizeHistory = ({ messages, issueNumber }) => {
+  const matchIndex = findLastIndex(messages, (message) => {
+    const { text } = message;
+    const { issueNumber: num, mergeStatus } = parseTag(text);
+    const isCurrentPR = num.trim() === (issueNumber || '').toString();
+    return isCurrentPR && mergeStatus === Q_STATUS.MERGING;
+  });
+
+  const match = messages[matchIndex];
+  const newer = takeWhile(messages, (_, i) => i < matchIndex).filter(
+    mergingFilter,
+  );
+  const older = takeRightWhile(messages, (_, i) => i > matchIndex).filter(
+    mergingFilter,
+  );
+
+  const nextPr = takeRight(newer)[0];
+
+  return {
+    nextPr,
+    messages,
+    newer,
+    older,
+    current: match,
+    currentIndex: matchIndex,
+  };
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -268,4 +306,5 @@ module.exports = {
   getUserFromName,
   findChannel,
   getFormattedComment,
+  organizeHistory,
 };

@@ -28,8 +28,8 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     return setActionStatus(STATUS.ALREADY_CLOSED);
   }
 
-  if (!commentMsg.includes(trigger)) {
-    core.info('Trigger not found');
+  if (!commentArr.find((x) => x.trim().startsWith(trigger))) {
+    core.info(`Trigger (${trigger}) not found.`);
     return setActionStatus(STATUS.TRIGGER_NOT_FOUND);
   }
 

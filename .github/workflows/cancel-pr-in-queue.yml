@@ -1,0 +1,29 @@
+name: test_cancel_pr
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  add_to_queue:
+    env: # Or as an environment variable
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+    runs-on: ubuntu-latest
+    name: Cancel PR in queue
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cancel PR in queue
+        uses: ./ # Uses an action in the root directory
+        id: cancel_pr
+        with:
+          init_trigger: '/cancel-merge'
+          mode: 'CANCEL'
+          channel: 'G01C4NFBUM7'
+      # Use the output from the `cancel_pr` step
+      - name: Get the output
+        run: echo "status => ${{ steps.cancel_pr.outputs.status }}"
+      - name: Get the next PR number
+        run: echo "next pr => ${{ steps.cancel_pr.outputs.next_pr }}"
