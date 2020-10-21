@@ -24,8 +24,10 @@ Methods:
 - [conversations.members](https://api.slack.com/methods/conversations.members)
 - [conversations.list](https://api.slack.com/methods/conversations.list)
 - [conversations.history](https://api.slack.com/methods/conversations.history)
+- [conversations.replies](https://api.slack.com/methods/conversations.replies)
 - [chat.postMessage](https://api.slack.com/methods/chat.postMessage)
 - [chat.update](https://api.slack.com/methods/chat.update)
+- [chat.delete](https://api.slack.com/methods/chat.delete)
 
 ### Step 2: Install bot to channel.
 
@@ -115,6 +117,7 @@ eg.
 
 - It will change the `Queue Status` from `MERGING` to either `CANCELLED`.
 - It will send a message to alert the next pull request in the queue when the current pull request is cancelled. Alert is only sent if the next PR is the next in line to be merged.
+- if configured, will delete message thread after cancel complete
 
 sample:
 
@@ -155,6 +158,7 @@ This mode updates the slack message of the current pull request.
 - It will change the `Queue Status` from `MERGING` to either `CANCELLED` or `MERGED` for current PR.
 - It will send a message to alert the next Pull request in the queue when the current pull request is closed/merged.
 - If a PR is merged ahead of one currently up for merge, The unmerged PR(s) will be marked as `STALE`. They can be added to the queue again by re-triggering the `INIT` mode.
+- if configured, will delete message thread after cancel complete
 
 sample:
 
