@@ -115,7 +115,7 @@ eg.
 
 **Actions taken:**
 
-- It will change the `Queue Status` from `MERGING` to either `CANCELLED`.
+- It will change the `Queue Status` from `MERGING` to `CANCELLED`.
 - It will send a message to alert the next pull request in the queue when the current pull request is cancelled. Alert is only sent if the next PR is the next in line to be merged.
 - if configured, will delete message thread after cancel complete
 
@@ -139,9 +139,11 @@ jobs:
         uses: lwhiteley/slack-merge-queue@{version}
         id: cancel_pr
         with:
-          init_trigger: '/cancel-merge'
+          cancel_trigger: '/cancel-merge'
           mode: 'CANCEL'
           channel: 'merge-queue'
+          cancel_ready_message: 'Previous PR merge was temporarily cancelled. This PR is now up for merge!'
+          # delete_on_cancel: 'true' # uncomment if you want to delete cancelled prs from queue
       # Use the output from the `cancel_pr` step
       - name: Get the output
         run: echo "status => ${{ steps.cancel_pr.outputs.status }}"
@@ -183,6 +185,7 @@ jobs:
           mode: 'MERGE'
           channel: 'merge-queue'
           merge_ready_message: 'Last PR closed. This PR is now up for merge!'
+          # delete_on_cancel: 'true' # uncomment if you want to delete cancelled prs from queue
       # Use the output from the `update_q_on_close` step
       - name: Get the output status
         run: echo "status => ${{ steps.update_q_on_close.outputs.status }}"
@@ -269,7 +272,7 @@ eg.
 | icon_emoji           | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
 | init_trigger         | INIT          | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                             |
 | cancel_trigger       | CANCEL        | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
-| cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Last PR closed. This PR is now up for merge!`                                    |
+| cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Previous PR merge was temporarily cancelled. This PR is now up for merge!`       |
 | merge_ready_message  | MERGE         | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
 | alert_message        | ALERT         | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
 | only_when_current    | ALERT         | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                               |
