@@ -14,6 +14,7 @@ const {
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function merge({ client, payload: orgPayload, channel, chatOptions }) {
+  const deleteOnCancel = core.getInput('delete_on_cancel') === 'true';
   const issueNumber = get(orgPayload, 'pull_request.number');
   const payload = {
     ...orgPayload,
@@ -109,6 +110,16 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
     });
 
     await Promise.all(promises);
+  }
+
+  if (!isMerged) {
+    if (deleteOnCancel) {
+      await client.chat.delete({
+        ...chatOptions,
+        ts: match.ts,
+        channel: channel.id,
+      });
+    }
   }
 }
 

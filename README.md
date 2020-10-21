@@ -258,17 +258,18 @@ eg.
 
 ### Action Inputs
 
-| Input                | Modes  | Description                                                                                                                                                                    |
-| -------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| mode                 | \_\_\_ | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
-| channel              | _ALL_  | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
-| icon_emoji           | _ALL_  | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
-| init_trigger         | INIT   | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                             |
-| cancel_trigger       | CANCEL | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
-| cancel_ready_message | CANCEL | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Last PR closed. This PR is now up for merge!`                                    |
-| merge_ready_message  | MERGE  | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
-| alert_message        | ALERT  | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
-| only_when_current    | ALERT  | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                               |
+| Input                | Modes         | Description                                                                                                                                                                    |
+| -------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| mode                 | \_\_\_        | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
+| channel              | _ALL_         | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
+| icon_emoji           | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
+| init_trigger         | INIT          | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                             |
+| cancel_trigger       | CANCEL        | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
+| cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Last PR closed. This PR is now up for merge!`                                    |
+| merge_ready_message  | MERGE         | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
+| alert_message        | ALERT         | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
+| only_when_current    | ALERT         | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                               |
+| delete_on_cancel     | MERGE, CANCEL | When `true`, will delete a queue item when cancelled. <br/> **default:** `false`                                                                                               |
 
 ### Action Outputs
 

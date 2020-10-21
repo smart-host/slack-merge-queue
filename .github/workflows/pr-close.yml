@@ -21,6 +21,7 @@ jobs:
         with:
           mode: 'MERGE'
           channel: 'G01C4NFBUM7'
+          delete_on_cancel: 'true'
       # Use the output from the `update_q_on_close` step
       - name: Get the output status
         run: echo "status => ${{ steps.update_q_on_close.outputs.status }}"

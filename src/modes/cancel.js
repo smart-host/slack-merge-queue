@@ -15,6 +15,7 @@ const { STATUS, Q_STATUS } = require('../consts');
 
 async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumber = get(orgPayload, 'issue.number');
+  const deleteOnCancel = core.getInput('delete_on_cancel') === 'true';
   const payload = {
     ...orgPayload,
     issueNumber,
@@ -86,6 +87,14 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
       thread_ts: nextPr.ts,
       mrkdwn: true,
       text: alertText,
+      channel: channel.id,
+    });
+  }
+
+  if (deleteOnCancel) {
+    await client.chat.delete({
+      ...chatOptions,
+      ts: match.ts,
       channel: channel.id,
     });
   }

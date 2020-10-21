@@ -22,6 +22,7 @@ jobs:
           init_trigger: '/cancel-merge'
           mode: 'CANCEL'
           channel: 'G01C4NFBUM7'
+          delete_on_cancel: 'true'
       # Use the output from the `cancel_pr` step
       - name: Get the output
         run: echo "status => ${{ steps.cancel_pr.outputs.status }}"
