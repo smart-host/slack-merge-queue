@@ -1,6 +1,5 @@
 const core = require('@actions/core');
 const get = require('lodash/get');
-const findLastIndex = require('lodash/findLastIndex');
 
 const {
   setActionStatus,
@@ -10,6 +9,7 @@ const {
   getHistory,
   getWatchers,
   organizeHistory,
+  deleteThread,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -112,14 +112,8 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
     await Promise.all(promises);
   }
 
-  if (!isMerged) {
-    if (deleteOnCancel) {
-      await client.chat.delete({
-        ...chatOptions,
-        ts: match.ts,
-        channel: channel.id,
-      });
-    }
+  if (!isMerged && deleteOnCancel) {
+    await deleteThread({ client, channel, message: match });
   }
 }
 

@@ -10,6 +10,7 @@ const {
   organizeHistory,
   getFormattedComment,
   getWatchers,
+  deleteThread,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -92,11 +93,7 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   }
 
   if (deleteOnCancel) {
-    await client.chat.delete({
-      ...chatOptions,
-      ts: match.ts,
-      channel: channel.id,
-    });
+    await deleteThread({ client, channel, message: match });
   }
 }
 

@@ -158,6 +158,32 @@ const getHistory = async ({ client, channel, ...opts }) => {
   return { messages: msgs };
 };
 
+const getMessageReplies = async ({ client, channel, ts, ...opts }) => {
+  let msgs = [];
+  let hasMore = true;
+  let cursor = undefined;
+
+  while (hasMore) {
+    const {
+      messages,
+      response_metadata,
+      has_more,
+    } = await client.conversations.replies({
+      ...opts,
+      channel: channel.id,
+      cursor,
+      ts,
+    });
+
+    hasMore = has_more;
+    cursor = response_metadata.next_cursor;
+
+    msgs = [...msgs, ...messages];
+  }
+
+  return { messages: msgs };
+};
+
 const findPrInQueue = async ({
   payload,
   client,
@@ -292,6 +318,23 @@ const organizeHistory = ({ messages, issueNumber }) => {
   };
 };
 
+const deleteThread = async ({ client, channel, message }) => {
+  const { messages = [] } = await getMessageReplies({
+    channel,
+    ts: message.ts,
+    client,
+  });
+
+  const promises = [...messages, message].map((m) => {
+    return client.chat.delete({
+      ts: m.ts,
+      channel: channel.id,
+    });
+  });
+
+  return Promise.all(promises);
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -307,4 +350,6 @@ module.exports = {
   findChannel,
   getFormattedComment,
   organizeHistory,
+  deleteThread,
+  getMessageReplies,
 };
