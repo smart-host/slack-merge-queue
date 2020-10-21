@@ -10,7 +10,7 @@ const {
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function alert({ client, payload: orgPayload, channel, chatOptions }) {
-  const issueNumbers = [get(orgPayload, 'pull_request.number').toString()];
+  const issueNumbers = [get(orgPayload, 'pull_request.number', '').toString()];
   const onlyWhenCurrent =
     core.getInput('only_when_current').toLowerCase() === 'true';
 
