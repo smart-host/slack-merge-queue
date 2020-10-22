@@ -2,7 +2,7 @@ name: test_cancel_pr
 
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
 
 jobs:
   add_to_queue:

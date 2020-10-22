@@ -126,7 +126,7 @@ name: sample_cancel_in_queue
 
 on:
   issue_comment:
-    types: [created, edited]
+    types: [created]
 
 jobs:
   add_to_queue:
