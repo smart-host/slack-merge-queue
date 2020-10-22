@@ -12,12 +12,12 @@ const {
   getWatchers,
   deleteThread,
   buildAlertMessage,
+  selectBoolString,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumber = get(orgPayload, 'issue.number');
-  const deleteOnCancel = core.getInput('delete_on_cancel') === 'true';
   const payload = {
     ...orgPayload,
     issueNumber,
@@ -26,6 +26,11 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const trigger = core.getInput('cancel_trigger');
   const state = get(payload, 'issue.state');
   const commentArr = getFormattedComment({ payload });
+  const selectedDeleteOnCancel = selectBoolString({
+    default: 'false',
+    values: [core.getInput('delete_on_cancel')],
+  });
+  const deleteOnCancel = selectedDeleteOnCancel === 'true';
 
   core.info(`comment:\n ${JSON.stringify(commentArr)}\n`);
 

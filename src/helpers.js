@@ -340,6 +340,21 @@ const buildAlertMessage = ({ text, watchers }) => {
   return `${text}${notify}`;
 };
 
+const selectFirstCorrect = ({
+  allowed = [],
+  values = [],
+  default: defaultValue,
+}) => {
+  const filteredValues = values.filter((x) => allowed.includes(x));
+  const [first] = filteredValues;
+  return first || defaultValue;
+};
+
+const selectBoolString = (props) => {
+  const values = props.values.map((x) => (x || '').toLowerCase());
+  return selectFirstCorrect({ ...props, allowed: ['true', 'false'], values });
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -358,4 +373,6 @@ module.exports = {
   deleteThread,
   getMessageReplies,
   buildAlertMessage,
+  selectFirstCorrect,
+  selectBoolString,
 };

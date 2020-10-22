@@ -7,13 +7,18 @@ const {
   getWatchers,
   getHistory,
   buildAlertMessage,
+  selectBoolString,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
 async function alert({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumbers = [get(orgPayload, 'pull_request.number', '').toString()];
-  const onlyWhenCurrent =
-    core.getInput('only_when_current').toLowerCase() === 'true';
+
+  const selectedOnlyWhenCurrent = selectBoolString({
+    default: 'true',
+    values: [core.getInput('only_when_current')],
+  });
+  const onlyWhenCurrent = selectedOnlyWhenCurrent === 'true';
 
   if (get(orgPayload, 'workflow_run')) {
     get(orgPayload, 'workflow_run.pull_requests', []).forEach(({ number }) => {
