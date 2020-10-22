@@ -107,10 +107,11 @@ notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
 
 This mode manually sets the status of a PR in the queue to `CANCELLED` without needing to close a pull request. This can be considered a temporary cancel. To trigger this mode a comment can be made on the pull request with the desired or default trigger phrase.
 
-eg.
+eg. trigger cancel and override `delete_on_cancel` option
 
 ```
 /cancel-merge
+delete_on_cancel: true
 ```
 
 **Actions taken:**
