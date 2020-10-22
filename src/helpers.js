@@ -221,6 +221,19 @@ const getWatchers = (match) => {
   return watchers;
 };
 
+const getCommentTaggedValue = ({ tag, commentArr }) => {
+  if (!tag || !Array.isArray(commentArr)) {
+    return null;
+  }
+  const tagString = commentArr.find((x) => x.startsWith(tag));
+
+  if (!tagString) {
+    return null;
+  }
+
+  return tagString.replace(tag, '').trim();
+};
+
 const processors = {
   [ATTACH_PREFIX.NOTIFY]: ({ text, members }) => {
     const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
@@ -375,4 +388,5 @@ module.exports = {
   buildAlertMessage,
   selectFirstCorrect,
   selectBoolString,
+  getCommentTaggedValue,
 };

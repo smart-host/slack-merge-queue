@@ -19,6 +19,7 @@ const Q_STATUS = {
 
 const ATTACH_PREFIX = {
   NOTIFY: 'notify:',
+  DELETE_ON_CANCEL: 'delete_on_cancel:',
 };
 
 const WATCHERS_TITLE = 'Watchers';

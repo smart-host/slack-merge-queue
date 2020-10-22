@@ -13,8 +13,9 @@ const {
   deleteThread,
   buildAlertMessage,
   selectBoolString,
+  getCommentTaggedValue,
 } = require('../helpers');
-const { STATUS, Q_STATUS } = require('../consts');
+const { STATUS, Q_STATUS, ATTACH_PREFIX } = require('../consts');
 
 async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const issueNumber = get(orgPayload, 'issue.number');
@@ -28,7 +29,13 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const commentArr = getFormattedComment({ payload });
   const selectedDeleteOnCancel = selectBoolString({
     default: 'false',
-    values: [core.getInput('delete_on_cancel')],
+    values: [
+      getCommentTaggedValue({
+        commentArr,
+        tag: ATTACH_PREFIX.DELETE_ON_CANCEL,
+      }),
+      core.getInput('delete_on_cancel'),
+    ],
   });
   const deleteOnCancel = selectedDeleteOnCancel === 'true';
 

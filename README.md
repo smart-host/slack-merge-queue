@@ -275,8 +275,8 @@ eg.
 | cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Previous PR merge was temporarily cancelled. This PR is now up for merge!`       |
 | merge_ready_message  | MERGE         | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
 | alert_message        | ALERT         | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
-| only_when_current    | ALERT         | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **default:** `true`                                                               |
-| delete_on_cancel     | MERGE, CANCEL | When `true`, will delete a queue item when cancelled. <br/> **default:** `false`                                                                                               |
+| only_when_current    | ALERT         | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **enum:** `true`, `false` <br/> **default:** `true`                               |
+| delete_on_cancel     | MERGE, CANCEL | When `true`, will delete a queue item when cancelled. <br/> **enum:** `true`, `false` <br/> **default:** `false`                                                               |
 
 ### Action Outputs
 
