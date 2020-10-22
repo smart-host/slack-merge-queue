@@ -74,8 +74,8 @@ jobs:
         id: add_to_q
         with:
           mode: 'INIT'
-          init_trigger: '/merging'
           channel: 'merge-queue'
+          init_trigger: '/merging'
       # Use the output from the `add_to_q` step
       - name: Get the output
         run: echo "status => ${{ steps.add_to_q.outputs.status }}"
@@ -140,9 +140,9 @@ jobs:
         uses: lwhiteley/slack-merge-queue@{version}
         id: cancel_pr
         with:
-          cancel_trigger: '/cancel-merge'
           mode: 'CANCEL'
           channel: 'merge-queue'
+          cancel_trigger: '/cancel-merge'
           cancel_ready_message: 'Previous PR merge was temporarily cancelled. This PR is now up for merge!'
           # delete_on_cancel: 'true' # uncomment if you want to delete cancelled prs from queue
       # Use the output from the `cancel_pr` step

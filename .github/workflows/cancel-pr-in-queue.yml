@@ -19,9 +19,9 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: cancel_pr
         with:
-          cancel_trigger: '/cancel-merge'
           mode: 'CANCEL'
           channel: 'G01C4NFBUM7'
+          cancel_trigger: '/cancel-merge'
           # delete_on_cancel: 'true'
       # Use the output from the `cancel_pr` step
       - name: Get the output
