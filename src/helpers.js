@@ -335,6 +335,11 @@ const deleteThread = async ({ client, channel, message }) => {
   return Promise.all(promises);
 };
 
+const buildAlertMessage = ({ text, watchers }) => {
+  const notify = watchers ? `\n\n${watchers}` : '';
+  return `${text}${notify}`;
+};
+
 module.exports = {
   findPrInQueue,
   setActionStatus,
@@ -352,4 +357,5 @@ module.exports = {
   organizeHistory,
   deleteThread,
   getMessageReplies,
+  buildAlertMessage,
 };

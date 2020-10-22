@@ -10,6 +10,7 @@ const {
   getWatchers,
   organizeHistory,
   deleteThread,
+  buildAlertMessage,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -81,7 +82,7 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
     const watchers = getWatchers(nextPr);
 
     const alertMsg = core.getInput('merge_ready_message');
-    const alertText = `${alertMsg}${watchers}`;
+    const alertText = buildAlertMessage({ text: alertMsg, watchers });
 
     await client.chat.postMessage({
       ...chatOptions,

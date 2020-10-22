@@ -6,6 +6,7 @@ const {
   parseTag,
   getWatchers,
   getHistory,
+  buildAlertMessage,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -60,10 +61,10 @@ async function alert({ client, payload: orgPayload, channel, chatOptions }) {
 
     core.info(`${prTag}found PR in queue, sending alert in thread`);
     core.debug(`${JSON.stringify(match, null, 2)}`);
-    let watchers = getWatchers(match);
+    const watchers = getWatchers(match);
 
     const alertMsg = core.getInput('alert_message');
-    const alertText = `${alertMsg}${watchers}`;
+    const alertText = buildAlertMessage({ text: alertMsg, watchers });
 
     const result = await client.chat.postMessage({
       ...chatOptions,
