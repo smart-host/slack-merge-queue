@@ -46,6 +46,8 @@ inputs:
 outputs:
   status: 
     description: 'status of the build run'
+  triggered: 
+    description: 'boolean for when a comment triggers an action'
   next_pr: 
     description: 'id number of next pull request in the queue'
 runs:
