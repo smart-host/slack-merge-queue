@@ -25,13 +25,17 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
 
   if (state !== 'open') {
     core.info('PR already closed');
+    core.setOutput('triggered', 'false');
     return setActionStatus(STATUS.ALREADY_CLOSED);
   }
 
   if (!commentArr.find((x) => x.trim().startsWith(trigger))) {
     core.info(`Trigger (${trigger}) not found.`);
+    core.setOutput('triggered', 'false');
     return setActionStatus(STATUS.TRIGGER_NOT_FOUND);
   }
+
+  core.setOutput('triggered', 'true');
 
   const match = await findPrInQueue({
     payload,
