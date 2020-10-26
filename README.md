@@ -283,7 +283,7 @@ eg.
 
 | Output    | Modes         | Description                                                                                                                                                   |
 | --------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| status    | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                    |
+| status    | _ALL_         | The status of the build run to give an insight into what has happened. These can be useful for taking additional actions in a workflow                        |
 | triggered | INIT, CANCEL  | This is a boolean string which is set to `true` only if the correct trigger phrase is commented for an open pull request. <br/><br/>**enum:** `true`, `false` |
 | next_pr   | MERGE, CANCEL | this is the `PR number` for the next pull request in the queue.                                                                                               |
 
