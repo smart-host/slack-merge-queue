@@ -35,9 +35,10 @@ const parseTag = (str) => {
 };
 
 const getMessage = (payload) => {
-  const url = get(payload, 'comment.html_url', '').split('#')[0];
-  const title = get(payload, 'issue.title');
-  const issueNumber = get(payload, 'issue.number');
+  const rawUrl =  get(payload, 'comment.html_url') ||  get(payload, 'review.html_url', '');
+  const url = rawUrl.split('#')[0];
+  const title = get(payload, 'issue.title') || get(payload, 'pull_request.title');
+  const issueNumber = get(payload, 'issue.number') || get(payload, 'pull_request.number');
 
   return buildTag({ status: Q_STATUS.MERGING, issueNumber, title, url });
 };
@@ -291,7 +292,7 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
 };
 
 const getFormattedComment = ({ payload }) => {
-  const commentMsg = get(payload, 'comment.body', '');
+  const commentMsg = get(payload, 'comment.body', '') || get(payload, 'review.body');
   return commentMsg.split('\n').filter(Boolean);
 };
 

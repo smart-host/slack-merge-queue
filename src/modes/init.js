@@ -15,10 +15,10 @@ const { STATUS, Q_STATUS } = require('../consts');
 async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
   const payload = {
     ...orgPayload,
-    issueNumber: get(orgPayload, 'issue.number'),
+    issueNumber: get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number'),
   };
   const trigger = core.getInput('init_trigger');
-  const state = get(payload, 'issue.state');
+  const state = get(payload, 'issue.state') || get(payload, 'pull_request.state');
   const commentArr = getFormattedComment({ payload });
 
   core.info(`comment:\n ${JSON.stringify(commentArr)}\n`);

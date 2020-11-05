@@ -61,6 +61,8 @@ name: sample-add-to-q
 on:
   issue_comment:
     types: [created, edited]
+  pull_request_review:
+    types: [submitted, edited]
 
 jobs:
   add_to_queue:
