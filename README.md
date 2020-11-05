@@ -130,6 +130,8 @@ name: sample_cancel_in_queue
 on:
   issue_comment:
     types: [created]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   add_to_queue:
