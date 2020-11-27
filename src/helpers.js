@@ -16,6 +16,19 @@ const {
   ATTACH_PREFIX,
 } = require('./consts');
 
+const getUsernames = ({ payload }) => {
+  const assignees = get(payload, 'issue.assignees', []).map(({login}) => login)
+  const users = [
+    ...assignees,
+    get(payload, 'comment.user.login'),
+    get(payload, 'issue.user.login'),
+    get(payload, 'issue.sender.login'),
+    get(payload, 'issue.assignee.login'),
+  ].filter(Boolean);
+
+  return users;
+}
+
 const buildTag = ({ issueNumber, status, title, url }) => {
   return [SEARCH_PREFIX, issueNumber, status, `<${url}|${title}>`].join(DELIM);
 };
@@ -241,9 +254,9 @@ const getCommentTaggedValue = ({ tag, commentArr }) => {
 };
 
 const processors = {
-  [ATTACH_PREFIX.NOTIFY]: ({ text, members }) => {
+  [ATTACH_PREFIX.NOTIFY]: ({ text, members, usernames }) => {
     const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
-    const userRefs = usersArr
+    const userRefs = [...usernames, ...usersArr]
       .map((user) => {
         const { id } = getUserFromName({ name: user.trim(), members }) || {};
         if (!id) {
@@ -267,7 +280,7 @@ const processors = {
   },
 };
 
-const buildAttachment = async ({ comments, client, channel, ...opts }) => {
+const buildAttachment = async ({ comments, client, channel, usernames, ...opts }) => {
   if (!Array.isArray(comments)) {
     return undefined;
   }
@@ -286,7 +299,7 @@ const buildAttachment = async ({ comments, client, channel, ...opts }) => {
       return accu;
     }
 
-    return [...accu, process({ text: prefixText, members })];
+    return [...accu, process({ text: prefixText, members, usernames })];
   }, []);
 
   if (attachments.length === 0) {
@@ -396,4 +409,5 @@ module.exports = {
   selectFirstCorrect,
   selectBoolString,
   getCommentTaggedValue,
+  getUsernames,
 };

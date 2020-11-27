@@ -9,6 +9,7 @@ const {
   parseTag,
   getWatchers,
   getFormattedComment,
+  getUsernames
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -20,6 +21,7 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
   const trigger = core.getInput('init_trigger');
   const state = get(payload, 'issue.state') || get(payload, 'pull_request.state');
   const commentArr = getFormattedComment({ payload });
+  const usernames = getUsernames({ payload });
 
   core.info(`comment:\n ${JSON.stringify(commentArr)}\n`);
 
@@ -55,6 +57,7 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
       comments: commentArr,
       client,
       channel,
+      usernames,
     })) || [];
 
   const eventAction = payload.action.toLowerCase();
