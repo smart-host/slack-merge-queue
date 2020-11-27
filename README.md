@@ -104,6 +104,7 @@ notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
 
 - You can update the `notify:` list in slack by editing an existing `INIT` comment.
   - Only the watchers list can be updated by a comment change once a pull request is in the queue.
+- If your slack username is the same as your github username then you will be automatically notified without specifying the `notify` list. This includes assignees and all other users associated with the pull request and comment made (except reviewers list)
 
 ### CANCEL
 
@@ -271,7 +272,7 @@ eg.
 ### Action Inputs
 
 | Input                | Modes         | Description                                                                                                                                                                    |
-| -------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| -------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
 | mode                 | \_\_\_        | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
 | channel              | _ALL_         | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
 | icon_emoji           | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
@@ -279,8 +280,9 @@ eg.
 | cancel_trigger       | CANCEL        | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
 | cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Previous PR merge was temporarily cancelled. This PR is now up for merge!`       |
 | merge_ready_message  | MERGE         | Message to be sent to the next PR in the queue after a merge/cancel occurs <br/> **default:** `Last PR closed. This PR is now up for merge!`                                   |
-| alert_message        | ALERT         | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |  |
+| alert_message        | ALERT         | Message to be sent to the current PR in the queue <br/> **default:** `build is complete. Time to merge!`                                                                       |     |
 | only_when_current    | ALERT         | When `true`, will only send an alert to a PR in slack if it is currently up for merge. <br/> **enum:** `true`, `false` <br/> **default:** `true`                               |
+| auto_notify          | INIT          | When `true`, will automatically notify any related github users to the pull request. <br/> **enum:** `true`, `false` <br/> **default:** `true`                                 |
 | delete_on_cancel     | MERGE, CANCEL | When `true`, will delete a queue item when cancelled. <br/> **enum:** `true`, `false` <br/> **default:** `false`                                                               |
 
 ### Action Outputs

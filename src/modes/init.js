@@ -9,7 +9,8 @@ const {
   parseTag,
   getWatchers,
   getFormattedComment,
-  getUsernames
+  getUsernames,
+  selectBoolString,
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
@@ -19,9 +20,13 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     issueNumber: get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number'),
   };
   const trigger = core.getInput('init_trigger');
+  const selectAutoNotify = selectBoolString({
+    default: 'true',
+    values: [core.getInput('auto_notify')],
+  });
   const state = get(payload, 'issue.state') || get(payload, 'pull_request.state');
   const commentArr = getFormattedComment({ payload });
-  const usernames = getUsernames({ payload });
+  const usernames = selectAutoNotify ? getUsernames({ payload }) : [];
 
   core.info(`comment:\n ${JSON.stringify(commentArr)}\n`);
 

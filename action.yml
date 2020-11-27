@@ -38,6 +38,10 @@ inputs:
     description: 'ALERT MODE: only alert if PR is currently up for merge'
     required: false
     default: 'true'
+  auto_notify:
+    description: 'INIT MODE: auto notify relayed guthub users'
+    required: false
+    default: 'true'
   delete_on_cancel:
     description: 'delete queue item when cancelled'
     required: false
