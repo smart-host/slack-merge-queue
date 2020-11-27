@@ -255,8 +255,8 @@ const getCommentTaggedValue = ({ tag, commentArr }) => {
 
 const processors = {
   [ATTACH_PREFIX.NOTIFY]: ({ text, members, usernames }) => {
-    const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
-    const usersToNotify = [...usernames, ...usersArr];
+    const usersArr = (text || '').replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
+    const usersToNotify = [...usernames, ...usersArr].filter(Boolean);
     core.debug(`raw list notify: ${JSON.stringify(usersToNotify)}`);
     const userRefs = usersToNotify
       .map((user) => {
@@ -296,10 +296,6 @@ const buildAttachment = async ({ comments, client, channel, usernames, ...opts }
   const attachments = ATTACH_PREFIXES.reduce((accu, next) => {
     const prefixText = comments.find((x) => x.startsWith(next));
     const process = processors[next] || ((text) => text);
-
-    if (!prefixText) {
-      return accu;
-    }
 
     return [...accu, process({ text: prefixText, members, usernames })];
   }, []);
