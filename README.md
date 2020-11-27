@@ -105,6 +105,7 @@ notify: U024BE7LH, Max Musterman, Mark, jim.j, john.doe
 - You can update the `notify:` list in slack by editing an existing `INIT` comment.
   - Only the watchers list can be updated by a comment change once a pull request is in the queue.
 - If your slack username is the same as your github username then you will be automatically notified without specifying the `notify` list. This includes assignees and all other users associated with the pull request and comment made (except reviewers list)
+  - github usernames will be lowercased to match slack requirements
 
 ### CANCEL
 

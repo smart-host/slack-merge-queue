@@ -17,17 +17,21 @@ const {
 } = require('./consts');
 
 const getUsernames = ({ payload }) => {
-  const assignees = get(payload, 'issue.assignees', []).map(({login}) => login)
+  const assignees = get(payload, 'issue.assignees', []).map(
+    ({ login }) => login,
+  );
   const users = [
     ...assignees,
     get(payload, 'comment.user.login'),
     get(payload, 'issue.user.login'),
     get(payload, 'issue.sender.login'),
     get(payload, 'issue.assignee.login'),
-  ].filter(Boolean);
+  ]
+    .filter(Boolean)
+    .map((x) => x.toLowerCase());
 
   return users;
-}
+};
 
 const buildTag = ({ issueNumber, status, title, url }) => {
   return [SEARCH_PREFIX, issueNumber, status, `<${url}|${title}>`].join(DELIM);
@@ -255,7 +259,10 @@ const getCommentTaggedValue = ({ tag, commentArr }) => {
 
 const processors = {
   [ATTACH_PREFIX.NOTIFY]: ({ text, members, usernames }) => {
-    const usersArr = (text || '').replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
+    const usersArr = (text || '')
+      .replace(ATTACH_PREFIX.NOTIFY, '')
+      .trim()
+      .split(',');
     const usersToNotify = [...usernames, ...usersArr].filter(Boolean);
     core.debug(`raw list notify: ${JSON.stringify(usersToNotify)}`);
     const userRefs = usersToNotify
@@ -282,7 +289,13 @@ const processors = {
   },
 };
 
-const buildAttachment = async ({ comments, client, channel, usernames, ...opts }) => {
+const buildAttachment = async ({
+  comments,
+  client,
+  channel,
+  usernames,
+  ...opts
+}) => {
   if (!Array.isArray(comments)) {
     return undefined;
   }
