@@ -256,7 +256,9 @@ const getCommentTaggedValue = ({ tag, commentArr }) => {
 const processors = {
   [ATTACH_PREFIX.NOTIFY]: ({ text, members, usernames }) => {
     const usersArr = text.replace(ATTACH_PREFIX.NOTIFY, '').trim().split(',');
-    const userRefs = [...usernames, ...usersArr]
+    const usersToNotify = [...usernames, ...usersArr];
+    core.debug(`raw list notify: ${JSON.stringify(usersToNotify)}`);
+    const userRefs = usersToNotify
       .map((user) => {
         const { id } = getUserFromName({ name: user.trim(), members }) || {};
         if (!id) {
