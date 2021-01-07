@@ -22,7 +22,7 @@ const client = new WebClient(token);
 
   core.info(`mode: ${modeName}\n`);
 
-  core.info(`github context: \n${JSON.stringify(github.context, null, 2)}`);
+  core.debug(`github context: \n${JSON.stringify(github.context, null, 2)}`);
 
   if (!mode) {
     setActionStatus(STATUS.FAILED);
