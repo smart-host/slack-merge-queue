@@ -277,6 +277,8 @@ eg.
 | mode                 | \_\_\_        | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
 | channel              | _ALL_         | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
 | icon_emoji           | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
+| history_threshold    | _ALL_         | The history threshold will stop looking up messages after the specified number of messages found do not in 'MERGING' messages <br/> **default:** `10`                          |
+| channel_types        | _ALL_         | Slack channel types to search through when trying to match the desired channel. <br/> **default:** `public_channel,private_channel`                                            |
 | init_trigger         | INIT          | The trigger text for adding a PR to the merge queue. <br/> **default:** `/merging`                                                                                             |
 | cancel_trigger       | CANCEL        | The trigger text for cancelling a PR in the merge queue. <br/> **default:** `/cancel-merge`                                                                                    |
 | cancel_ready_message | CANCEL        | Message to be sent to the next PR in the queue after a cancel is complete <br/> **default:** `Previous PR merge was temporarily cancelled. This PR is now up for merge!`       |

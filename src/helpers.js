@@ -80,15 +80,12 @@ const getMembers = async ({ client, channel, ...opts }) => {
   let cursor = undefined;
 
   while (hasMore) {
-    const {
-      members,
-      response_metadata,
-      has_more,
-    } = await client.conversations.members({
-      channel: channel.id,
-      cursor,
-      ...opts,
-    });
+    const { members, response_metadata, has_more } =
+      await client.conversations.members({
+        channel: channel.id,
+        cursor,
+        ...opts,
+      });
 
     hasMore = has_more;
     cursor = response_metadata.next_cursor;
@@ -106,26 +103,33 @@ const getMembers = async ({ client, channel, ...opts }) => {
   return { members: results };
 };
 
-const findChannel = async ({ client, channelName, ...opts }) => {
+const findChannel = async ({
+  client,
+  channelName,
+  types = 'public_channel,private_channel',
+  ...opts
+}) => {
   let result = null;
   let hasMore = true;
   let cursor = undefined;
 
+  core.debug(`channel to lookup: ${channelName}`);
+
   while (hasMore && !result) {
-    const {
-      channels,
-      response_metadata,
-      has_more,
-    } = await client.conversations.list({
-      ...opts,
-      cursor,
-      types: 'public_channel,private_channel',
-    });
+    const { channels, response_metadata, has_more } =
+      await client.conversations.list({
+        ...opts,
+        cursor,
+        types,
+      });
 
     hasMore = has_more;
     cursor = response_metadata.next_cursor;
 
     result = channels.find(({ id, name, name_normalized }) => {
+      core.debug(
+        `channels lookup: ${JSON.stringify({ id, name, name_normalized })}`,
+      );
       return [id, name, name_normalized].some((x) => x === channelName);
     });
   }
@@ -153,30 +157,43 @@ const getUserFromName = ({ name: providedName, members }) => {
   return member;
 };
 
-const getHistory = async ({ client, channel, ...opts }) => {
+const getHistory = async ({
+  client,
+  channel,
+  historyThreshold = 10,
+  ...opts
+}) => {
   let msgs = [];
   let hasMore = true;
+  let nonMergingCount = 0;
+  let hasReachedThreshold = nonMergingCount >= historyThreshold;
   let cursor = undefined;
 
+  core.debug(`history threshold: ${historyThreshold}`);
+
   while (hasMore) {
-    const {
-      messages,
-      response_metadata,
-      has_more,
-    } = await client.conversations.history({
-      channel: channel.id,
-      cursor,
-      ...opts,
+    const { messages, response_metadata, has_more } =
+      await client.conversations.history({
+        channel: channel.id,
+        cursor,
+        ...opts,
+      });
+
+    hasMore = hasReachedThreshold ? false : has_more;
+    cursor = response_metadata.next_cursor;
+    const mergeQueueMessages = messages.filter(({ text }) =>
+      text.startsWith(SEARCH_PREFIX),
+    );
+    mergeQueueMessages.forEach(({ text }) => {
+      if (!text.includes(Q_STATUS.MERGING)) {
+        nonMergingCount++;
+      }
     });
 
-    hasMore = has_more;
-    cursor = response_metadata.next_cursor;
-
-    msgs = [
-      ...msgs,
-      ...messages.filter(({ text }) => text.startsWith(SEARCH_PREFIX)),
-    ];
+    msgs = [...msgs, ...mergeQueueMessages];
   }
+
+  core.debug(`history threshold reached: ${hasReachedThreshold}`);
 
   return { messages: msgs };
 };
@@ -187,16 +204,13 @@ const getMessageReplies = async ({ client, channel, ts, ...opts }) => {
   let cursor = undefined;
 
   while (hasMore) {
-    const {
-      messages,
-      response_metadata,
-      has_more,
-    } = await client.conversations.replies({
-      ...opts,
-      channel: channel.id,
-      cursor,
-      ts,
-    });
+    const { messages, response_metadata, has_more } =
+      await client.conversations.replies({
+        ...opts,
+        channel: channel.id,
+        cursor,
+        ts,
+      });
 
     hasMore = has_more;
     cursor = response_metadata.next_cursor;
@@ -211,6 +225,7 @@ const findPrInQueue = async ({
   payload,
   client,
   channel,
+  historyThreshold,
   filter = () => true,
 }) => {
   const { issueNumber } = payload;
@@ -218,6 +233,7 @@ const findPrInQueue = async ({
   const { messages: matches } = await getHistory({
     client,
     channel,
+    historyThreshold,
   });
 
   return findLast(matches, (message, ...args) => {

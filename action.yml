@@ -46,6 +46,14 @@ inputs:
     description: 'delete queue item when cancelled'
     required: false
     default: 'false'
+  history_threshold:
+    description: 'delete queue item when cancelled'
+    required: false
+    default: '10'
+  channel_types:
+    description: 'channel types to include in the request'
+    required: false
+    default: 'public_channel,private_channel'
 
 outputs:
   status: 

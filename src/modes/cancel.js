@@ -17,15 +17,23 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS, ATTACH_PREFIX } = require('../consts');
 
-async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
-  const issueNumber = get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number');
+async function cancel({
+  client,
+  payload: orgPayload,
+  historyThreshold,
+  channel,
+  chatOptions,
+}) {
+  const issueNumber =
+    get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number');
   const payload = {
     ...orgPayload,
     issueNumber,
   };
 
   const trigger = core.getInput('cancel_trigger');
-  const state = get(payload, 'issue.state') || get(orgPayload, 'pull_request.state');
+  const state =
+    get(payload, 'issue.state') || get(orgPayload, 'pull_request.state');
   const commentArr = getFormattedComment({ payload });
   const selectedDeleteOnCancel = selectBoolString({
     default: 'false',
@@ -58,9 +66,14 @@ async function cancel({ client, payload: orgPayload, channel, chatOptions }) {
   const { messages = [] } = await getHistory({
     channel,
     client,
+    historyThreshold,
   });
 
-  const { older, nextPr, current: match } = organizeHistory({
+  const {
+    older,
+    nextPr,
+    current: match,
+  } = organizeHistory({
     messages,
     issueNumber,
   });

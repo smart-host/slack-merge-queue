@@ -14,17 +14,25 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
+async function initRole({
+  client,
+  payload: orgPayload,
+  channel,
+  historyThreshold,
+  chatOptions,
+}) {
   const payload = {
     ...orgPayload,
-    issueNumber: get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number'),
+    issueNumber:
+      get(orgPayload, 'issue.number') || get(orgPayload, 'pull_request.number'),
   };
   const trigger = core.getInput('init_trigger');
   const selectAutoNotify = selectBoolString({
     default: 'true',
     values: [core.getInput('auto_notify')],
   });
-  const state = get(payload, 'issue.state') || get(payload, 'pull_request.state');
+  const state =
+    get(payload, 'issue.state') || get(payload, 'pull_request.state');
   const commentArr = getFormattedComment({ payload });
   const usernames = selectAutoNotify ? getUsernames({ payload }) : [];
 
@@ -48,6 +56,7 @@ async function initRole({ client, payload: orgPayload, channel, chatOptions }) {
     payload,
     client,
     channel,
+    historyThreshold,
     filter: ({ text }) => {
       if (!text) {
         return false;

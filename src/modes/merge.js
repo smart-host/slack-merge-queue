@@ -14,7 +14,13 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function merge({ client, payload: orgPayload, channel, chatOptions }) {
+async function merge({
+  client,
+  payload: orgPayload,
+  historyThreshold,
+  channel,
+  chatOptions,
+}) {
   const deleteOnCancel = core.getInput('delete_on_cancel') === 'true';
   const issueNumber = get(orgPayload, 'pull_request.number');
   const payload = {
@@ -26,9 +32,14 @@ async function merge({ client, payload: orgPayload, channel, chatOptions }) {
   const { messages = [] } = await getHistory({
     channel,
     client,
+    historyThreshold,
   });
 
-  const { nextPr, older, current: match } = organizeHistory({
+  const {
+    nextPr,
+    older,
+    current: match,
+  } = organizeHistory({
     messages,
     issueNumber,
   });

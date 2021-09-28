@@ -12,10 +12,14 @@ const client = new WebClient(token);
 (async function main() {
   const modeName = core.getInput('mode');
   const channelName = core.getInput('channel');
+  const channelTypes = core.getInput('channel_types');
+  const historyThreshold = Number(core.getInput('history_threshold')) || 10;
+
   const { payload, ...actionContext } = github.context;
   const channel = await findChannel({
     client,
     channelName,
+    types: channelTypes,
   });
 
   const mode = modes[modeName];
@@ -37,7 +41,14 @@ const client = new WebClient(token);
   const chatOptions = { icon_emoji: core.getInput('icon_emoji') };
 
   try {
-    await mode({ client, payload, channel, actionContext, chatOptions });
+    await mode({
+      client,
+      payload,
+      channel,
+      historyThreshold,
+      actionContext,
+      chatOptions,
+    });
   } catch (error) {
     setActionStatus(STATUS.FAILED);
     core.error(error.message);

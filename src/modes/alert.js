@@ -11,7 +11,13 @@ const {
 } = require('../helpers');
 const { STATUS, Q_STATUS } = require('../consts');
 
-async function alert({ client, payload: orgPayload, channel, chatOptions }) {
+async function alert({
+  client,
+  payload: orgPayload,
+  historyThreshold,
+  channel,
+  chatOptions,
+}) {
   const issueNumbers = [get(orgPayload, 'pull_request.number', '').toString()];
 
   const selectedOnlyWhenCurrent = selectBoolString({
@@ -31,6 +37,7 @@ async function alert({ client, payload: orgPayload, channel, chatOptions }) {
   const { messages = [] } = await getHistory({
     channel,
     client,
+    historyThreshold,
   });
 
   let messagesToAlert = [];
