@@ -6,7 +6,9 @@ handles a merge queue with github actions and slack.
 
 ### Step 1: Create a slack web api bot
 
-Create a slack api bot and setup the following permissions
+Create a slack api bot via https://api.slack.com/apps
+
+then setup the following permissions
 
 **Base required scopes:**
 
