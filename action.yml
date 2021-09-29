@@ -9,7 +9,10 @@ inputs:
     required: true
   channel:
     description: 'the channel to use as the queue'
-    required: true
+    required: false
+  channel_id:
+    description: 'the channel id to use as the queue'
+    required: false
   icon_emoji:
     description: 'icon emoji for the bot'
     required: false
