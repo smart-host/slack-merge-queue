@@ -107,6 +107,7 @@ const findChannel = async ({
   client,
   channelName,
   types = 'public_channel,private_channel',
+  teamId,
   ...opts
 }) => {
   let result = null;
@@ -121,6 +122,7 @@ const findChannel = async ({
         ...opts,
         cursor,
         types,
+        team_id: teamId,
       });
 
     hasMore = has_more;

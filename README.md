@@ -276,6 +276,7 @@ eg.
 | -------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | mode                 | \_\_\_        | Required input to tell the GH Action what mode to run. An invalid mode will fail the build. <br/><br/> **enum**: `INIT`, `CANCEL`, `MERGE`, `ALERT` <br/> **required:** `true` |
 | channel              | _ALL_         | The slack channel to use as the merge queue. Can specify channel id or name. Build will fail if the channel cannot be found <br/> **required:** `true`                         |
+| team_id              | _ALL_         | encoded Slack team id to list channels in, required if token belongs to org-wide app eg. `T1234567890` <br/> **default:** _undefined_                                          |
 | icon_emoji           | _ALL_         | A slack emoji to use as the bot's avatar <br/> **default:** `:robot_face:`                                                                                                     |
 | history_threshold    | _ALL_         | The history threshold will stop looking up messages after the specified number of messages found do not in 'MERGING' messages <br/> **default:** `10`                          |
 | channel_types        | _ALL_         | Slack channel types to search through when trying to match the desired channel. <br/> **default:** `public_channel,private_channel`                                            |

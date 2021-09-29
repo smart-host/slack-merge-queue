@@ -54,6 +54,9 @@ inputs:
     description: 'channel types to include in the request'
     required: false
     default: 'public_channel,private_channel'
+  team_id:
+    description: 'encoded Slack team id to list channels in'
+    required: false
 
 outputs:
   status: 

@@ -12,6 +12,7 @@ const client = new WebClient(token);
 (async function main() {
   const modeName = core.getInput('mode');
   const channelName = core.getInput('channel');
+  const teamId = core.getInput('team_id');
   const channelTypes = core.getInput('channel_types');
   const historyThreshold = Number(core.getInput('history_threshold')) || 10;
 
@@ -20,6 +21,7 @@ const client = new WebClient(token);
     client,
     channelName,
     types: channelTypes,
+    teamId,
   });
 
   const mode = modes[modeName];
