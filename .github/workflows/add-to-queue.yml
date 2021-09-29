@@ -22,7 +22,7 @@ jobs:
         id: add_to_q
         with:
           mode: 'INIT'
-          channel: 'G01C4NFBUM7'
+          channel_id: 'G01C4NFBUM7'
           init_trigger: '/merging'
       # Use the output from the `add_to_q` step
       - name: Get the output
