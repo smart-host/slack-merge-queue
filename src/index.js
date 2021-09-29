@@ -9,7 +9,7 @@ const { STATUS } = require('./consts');
 const token = process.env.SLACK_TOKEN;
 const client = new WebClient(token);
 
-async function resolveChaneel(channelId, channelName, channelTypes, teamId) {
+async function resolveChannel(channelId, channelName, channelTypes, teamId) {
   if (channelId) {
     return channelId;
   }
@@ -31,7 +31,7 @@ async function resolveChaneel(channelId, channelName, channelTypes, teamId) {
   const historyThreshold = Number(core.getInput('history_threshold')) || 10;
 
   const { payload, ...actionContext } = github.context;
-  const channel = await resolveChaneel(
+  const channel = await resolveChannel(
     channelId,
     channelName,
     channelTypes,
@@ -41,6 +41,7 @@ async function resolveChaneel(channelId, channelName, channelTypes, teamId) {
   const mode = modes[modeName];
 
   core.info(`mode: ${modeName}\n`);
+  core.info(`resolved channel: ${channel}\n`);
 
   core.debug(`github context: \n${JSON.stringify(github.context, null, 2)}`);
 
