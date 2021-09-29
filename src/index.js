@@ -11,7 +11,7 @@ const client = new WebClient(token);
 
 async function resolveChannel(channelId, channelName, channelTypes, teamId) {
   if (channelId) {
-    return channelId;
+    return { id: channelId };
   }
 
   return findChannel({
@@ -41,7 +41,7 @@ async function resolveChannel(channelId, channelName, channelTypes, teamId) {
   const mode = modes[modeName];
 
   core.info(`mode: ${modeName}\n`);
-  core.info(`resolved channel: ${channel}\n`);
+  core.info(`resolved channel: ${JSON.stringify(channel, null, 2)}\n`);
 
   core.debug(`github context: \n${JSON.stringify(github.context, null, 2)}`);
 
