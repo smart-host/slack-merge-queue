@@ -33,7 +33,7 @@ const getUsernames = ({ payload }) => {
   return users;
 };
 
-const buildTag = ({ issueNumber, status, title, url }) => {
+const buildTag = ({ issueNumber, status, title, url } = {}) => {
   return [SEARCH_PREFIX, issueNumber, status, `<${url}|${title}>`].join(DELIM);
 };
 
@@ -252,8 +252,9 @@ const getWatchers = (match) => {
 
   if (match && Array.isArray(match.attachments)) {
     const { fields } =
-      match.attachments.find(({ title }) => title.includes(WATCHERS_TITLE)) ||
-      {};
+      match.attachments.filter(Boolean).find((data = {}) => {
+        return get(data, 'title').includes(WATCHERS_TITLE);
+      }) || {};
     if (fields) {
       watchers = `\n${fields[0].value}`;
     }
