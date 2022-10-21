@@ -1,6 +1,6 @@
 {
   "name": "slack-merge-queue",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "manages a merge queue with github actions and slack",
   "main": "src/index.js",
   "scripts": {
