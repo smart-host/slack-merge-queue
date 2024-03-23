@@ -14,7 +14,7 @@ jobs:
       # To use this repository's private action,
       # you must check out the repository
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Update queue
         uses: ./ # Uses an action in the root directory
         id: update_q_on_close
