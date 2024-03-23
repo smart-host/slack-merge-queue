@@ -2,12 +2,11 @@ name: test_alert_current_wait
 
 on:
   workflow_run:
-    workflows: ["mock-workflow"]
-    types: 
+    workflows: ['mock-workflow']
+    types:
       - completed
 
 jobs:
-
   alert_current_pr:
     env: # Or as an environment variable
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
@@ -17,7 +16,7 @@ jobs:
       # To use this repository's private action,
       # you must check out the repository
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Alert queue after wait
         uses: ./ # Uses an action in the root directory
         id: alert
