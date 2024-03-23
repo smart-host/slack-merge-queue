@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/lwhiteley/slack-merge-queue#readme",
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1",
-    "@slack/web-api": "^6.7.2",
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@slack/web-api": "^7.0.2",
     "lodash": "^4.17.21"
   }
 }
