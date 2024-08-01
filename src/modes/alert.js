@@ -60,7 +60,7 @@ async function alert({
   core.info(`issues: ${JSON.stringify(filteredIssues, null, 2)}`);
 
   const promises = messagesToAlert.map(async (match) => {
-    const { text } = match;
+    const { text } = match || {};
     const { issueNumber: num } = parseTag(text);
     const prTag = `PR${num}: `;
 

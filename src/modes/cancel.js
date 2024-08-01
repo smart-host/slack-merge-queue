@@ -83,7 +83,7 @@ async function cancel({
     return setActionStatus(STATUS.NOT_FOUND);
   }
 
-  const tagSections = parseTag(match.text);
+  const tagSections = parseTag(match?.text);
   const newTag = buildTagFromParse({
     ...tagSections,
     mergeStatus: Q_STATUS.CANCELLED,

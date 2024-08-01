@@ -183,7 +183,7 @@ const getHistory = async ({
 
     hasMore = hasReachedThreshold ? false : has_more;
     cursor = response_metadata.next_cursor;
-    const mergeQueueMessages = messages.filter(({ text }) =>
+    const mergeQueueMessages = (messages || []).filter(({ text }) =>
       text.startsWith(SEARCH_PREFIX),
     );
     mergeQueueMessages.forEach(({ text }) => {
@@ -239,7 +239,7 @@ const findPrInQueue = async ({
   });
 
   return findLast(matches, (message, ...args) => {
-    const { text } = message;
+    const { text } = message || {};
     const { issueNumber: num } = parseTag(text);
     return (
       num.trim() === issueNumber.toString() && filter(message, ...args, matches)

@@ -88,7 +88,7 @@ async function merge({
   if (nextPr) {
     core.info(`next PR: \n${JSON.stringify(nextPr, null, 2)}`);
 
-    const { issueNumber: nextPrNum } = parseTag(nextPr.text);
+    const { issueNumber: nextPrNum } = parseTag(nextPr?.text);
     core.setOutput('next_pr', nextPrNum);
     const watchers = getWatchers(nextPr);
 
@@ -106,7 +106,7 @@ async function merge({
 
   if (isMerged) {
     const promises = older.map(async (msg) => {
-      const { text } = msg;
+      const { text } = msg || {};
       const tagSections = parseTag(text);
       const newTag = buildTagFromParse({
         ...tagSections,

@@ -88,7 +88,7 @@ async function initRole({
     const updatedMsg = await client.chat.update({
       ...chatOptions,
       ts: match.ts,
-      text: match.text,
+      text: match?.text,
       channel: channel.id,
       attachments,
     });
