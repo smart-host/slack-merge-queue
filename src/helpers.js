@@ -250,13 +250,15 @@ const findPrInQueue = async ({
 const getWatchers = (match) => {
   let watchers = '';
 
-  if (match && Array.isArray(match.attachments)) {
+  const attachments = (match?.attachments ?? []).filter(Boolean);
+
+  if (attachments.length) {
     const { fields } =
-      match.attachments.filter(Boolean).find((data = {}) => {
+      attachments.find((data = {}) => {
         return get(data, 'title').includes(WATCHERS_TITLE);
       }) || {};
     if (fields) {
-      watchers = `\n${fields[0].value}`;
+      watchers = `\n${fields?.[0]?.value}`;
     }
   }
 

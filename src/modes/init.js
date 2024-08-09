@@ -66,13 +66,15 @@ async function initRole({
     },
   });
 
-  const attachments =
+  const builtAttachments =
     (await buildAttachment({
       comments: commentArr,
       client,
       channel,
       usernames,
     })) || [];
+
+  const attachments = builtAttachments.filter(Boolean);
 
   const eventAction = payload.action.toLowerCase();
   const oldAttachments = get(match, 'attachments', []);
@@ -105,6 +107,9 @@ async function initRole({
 
   core.info(`Trigger found. adding PR to queue:\n`);
   const text = getMessage(payload);
+
+  core.info(`Message:\n${text}`);
+
   const result = await client.chat.postMessage({
     ...chatOptions,
     channel: channel.id,
@@ -112,6 +117,7 @@ async function initRole({
     mrkdwn: true,
     attachments,
   });
+
   core.info(JSON.stringify(result, null, 2));
 
   setActionStatus(STATUS.ADDED_TO_QUEUE);
