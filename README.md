@@ -2,8 +2,8 @@
 
 handles a merge queue with github actions and slack.
 
-> NOTE: smarthost has taken stewardship of the repository and transferred from `lwhiteley/slack-merge-queue`
-> The last version under the previous owner is `lwhiteley/slack-merge-queue@v3`
+> NOTE: smarthost has taken stewardship of the repository and transferred from `lwhiteley/slack-merge-queue`.
+> The last version under the previous owner's account is `lwhiteley/slack-merge-queue@v3`.
 
 ## Setup
 
