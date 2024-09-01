@@ -4,6 +4,7 @@ handles a merge queue with github actions and slack.
 
 > NOTE: smarthost has taken stewardship of the repository and transferred from `lwhiteley/slack-merge-queue`.
 > The last version under the previous owner's account is `lwhiteley/slack-merge-queue@v3`.
+> Please now use the version specified below in the documentation.
 
 ## Setup
 
@@ -77,7 +78,7 @@ jobs:
     name: Add PR to queue
     steps:
       - name: Add PR to queue
-        uses: lwhiteley/slack-merge-queue@v3
+        uses: smarthost/slack-merge-queue@v4
         id: add_to_q
         with:
           mode: 'INIT'
@@ -148,7 +149,7 @@ jobs:
     name: Cancel PR in queue
     steps:
       - name: Cancel PR in queue
-        uses: lwhiteley/slack-merge-queue@v3
+        uses: smarthost/slack-merge-queue@v4
         id: cancel_pr
         with:
           mode: 'CANCEL'
@@ -191,7 +192,7 @@ jobs:
     name: Update Queue
     steps:
       - name: Update queue
-        uses: lwhiteley/slack-merge-queue@v3
+        uses: smarthost/slack-merge-queue@v4
         id: update_q_on_close
         with:
           mode: 'MERGE'
@@ -238,7 +239,7 @@ jobs:
     name: Alert Current in Queue
     steps:
       - name: Alert queue
-        uses: lwhiteley/slack-merge-queue@v3
+        uses: smarthost/slack-merge-queue@v4
         id: alert
         with:
           mode: 'ALERT'
