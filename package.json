@@ -1,6 +1,6 @@
 {
   "name": "slack-merge-queue",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "manages a merge queue with github actions and slack",
   "main": "src/index.js",
   "author": "Layton Whiteley",
