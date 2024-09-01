@@ -42,7 +42,9 @@ const buildTagFromParse = ({ searchPrefix, issueNumber, mergeStatus, url }) => {
 };
 
 const parseTag = (str) => {
-  const [searchPrefix, issueNumber, status, url] = str.split(DELIM.trim());
+  const [searchPrefix = '', issueNumber = '', status = '', url = ''] = (
+    str || ''
+  ).split(DELIM.trim());
   return {
     searchPrefix: searchPrefix.trim(),
     issueNumber: issueNumber.trim(),
@@ -146,13 +148,13 @@ const getUserFromName = ({ name: providedName, members }) => {
     const possibleNames = [
       id,
       name,
-      get(profile, 'email', '').split('@')[0],
+      (profile?.email ?? '').split('@')[0],
       get(profile, 'display_name'),
       get(profile, 'display_name_normalized'),
       real_name,
       get(profile, 'real_name'),
       get(profile, 'real_name_normalized'),
-    ];
+    ].filter(Boolean);
     return possibleNames.some((x) => x === pn);
   });
 
@@ -242,7 +244,8 @@ const findPrInQueue = async ({
     const { text } = message || {};
     const { issueNumber: num } = parseTag(text);
     return (
-      num.trim() === issueNumber.toString() && filter(message, ...args, matches)
+      num?.trim() === issueNumber.toString() &&
+      filter(message, ...args, matches)
     );
   });
 };
@@ -344,7 +347,7 @@ const buildAttachment = async ({
 const getFormattedComment = ({ payload }) => {
   const commentMsg =
     get(payload, 'comment.body', '') || get(payload, 'review.body');
-  return commentMsg.split('\n').filter(Boolean);
+  return (commentMsg ?? '').split('\n').filter(Boolean);
 };
 
 const mergingFilter = ({ text }) => {

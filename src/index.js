@@ -69,6 +69,6 @@ async function resolveChannel(channelId, channelName, channelTypes, teamId) {
   } catch (error) {
     setActionStatus(STATUS.FAILED);
     core.error(error.message);
-    core.debug(error);
+    core.error(error);
   }
 })();
