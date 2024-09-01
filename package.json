@@ -3,6 +3,12 @@
   "version": "3.0.2",
   "description": "manages a merge queue with github actions and slack",
   "main": "src/index.js",
+  "author": "Layton Whiteley",
+  "contributors": [
+    {
+      "name": "Smart Host"
+    }
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "commit": "git add . && git commit -am 'chore: add dist action'",
@@ -14,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lwhiteley/slack-merge-queue.git"
+    "url": "git+https://github.com/smarthost/slack-merge-queue.git"
   },
   "keywords": [
     "actions",
@@ -24,12 +30,11 @@
     "queue",
     "init"
   ],
-  "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lwhiteley/slack-merge-queue/issues"
+    "url": "https://github.com/smarthost/slack-merge-queue/issues"
   },
-  "homepage": "https://github.com/lwhiteley/slack-merge-queue#readme",
+  "homepage": "https://github.com/smarthost/slack-merge-queue#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
