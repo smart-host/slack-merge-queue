@@ -78,7 +78,7 @@ jobs:
     name: Add PR to queue
     steps:
       - name: Add PR to queue
-        uses: smart-host/slack-merge-queue@v4
+        uses: smart-host/slack-merge-queue@v5
         id: add_to_q
         with:
           mode: 'INIT'
@@ -149,7 +149,7 @@ jobs:
     name: Cancel PR in queue
     steps:
       - name: Cancel PR in queue
-        uses: smart-host/slack-merge-queue@v4
+        uses: smart-host/slack-merge-queue@v5
         id: cancel_pr
         with:
           mode: 'CANCEL'
@@ -192,7 +192,7 @@ jobs:
     name: Update Queue
     steps:
       - name: Update queue
-        uses: smart-host/slack-merge-queue@v4
+        uses: smart-host/slack-merge-queue@v5
         id: update_q_on_close
         with:
           mode: 'MERGE'
@@ -239,7 +239,7 @@ jobs:
     name: Alert Current in Queue
     steps:
       - name: Alert queue
-        uses: smart-host/slack-merge-queue@v4
+        uses: smart-host/slack-merge-queue@v5
         id: alert
         with:
           mode: 'ALERT'
