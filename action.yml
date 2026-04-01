@@ -69,5 +69,5 @@ outputs:
   next_pr: 
     description: 'id number of next pull request in the queue'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'src/index.js'
